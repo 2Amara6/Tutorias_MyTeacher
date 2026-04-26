@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Perfil del Tutor y Reserva | EduTutor</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script src="../js/tailwind.config.js"></script>
+    <link rel="stylesheet" href="../styles/tutor_profile.css" />
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased">
+
+    <!-- Toast -->
+    <div id="toast"
+        class="fixed bottom-6 right-6 z-50 bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-5 py-3 rounded-xl shadow-2xl text-sm font-semibold flex items-center gap-2">
+        <span class="material-symbols-outlined text-primary" id="toast-icon">check_circle</span>
+        <span id="toast-msg">Done!</span>
+    </div>
+
+    <!-- Booking Confirmation Modal -->
+    <div id="book-modal" class="fixed inset-0 z-50 items-center justify-center bg-black/50 backdrop-blur-sm">
+        <div
+            class="bg-white dark:bg-slate-900 rounded-2xl p-8 w-full max-w-md shadow-2xl border border-slate-200 dark:border-slate-800 mx-4">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="material-symbols-outlined text-green-600 text-3xl">check_circle</span>
+                </div>
+                <h3 class="text-xl font-bold mb-1">Confirmar Reserva</h3>
+                <p class="text-slate-500 text-sm">Estás a punto de reservar una sesión con la Dra. Sarah Jenkins</p>
+            </div>
+            <div class="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 mb-6 space-y-2 text-sm">
+                <div class="flex justify-between"><span class="text-slate-500">Tutora</span><span
+                        class="font-semibold">Dr. Sarah Jenkins</span></div>
+                <div class="flex justify-between"><span class="text-slate-500">Fecha</span><span class="font-semibold"
+                        id="modal-date">—</span></div>
+                <div class="flex justify-between"><span class="text-slate-500">Hora</span><span class="font-semibold"
+                        id="modal-time">—</span></div>
+                <div class="flex justify-between"><span class="text-slate-500">Tipo</span><span class="font-semibold"
+                        id="modal-type">—</span></div>
+                <div class="flex justify-between border-t border-slate-200 dark:border-slate-700 pt-2 mt-2"><span
+                        class="font-bold">Total</span><span class="font-bold text-primary">$79.500 COP</span></div>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="closeBookModal()"
+                    class="flex-1 py-3 border border-slate-200 dark:border-slate-700 rounded-xl font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800">Cancelar</button>
+                <button onclick="confirmBooking()"
+                    class="flex-1 py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary/90">Confirm
+                    &amp; Pay</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Message Modal -->
+    <div id="msg-modal" class="fixed inset-0 z-50 items-center justify-center bg-black/50 backdrop-blur-sm">
+        <div
+            class="bg-white dark:bg-slate-900 rounded-2xl p-8 w-full max-w-md shadow-2xl border border-slate-200 dark:border-slate-800 mx-4">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-lg font-bold">Mensaje a la Dra. Sarah Jenkins</h3>
+                <button onclick="closeMsgModal()" class="text-slate-400 hover:text-slate-700"><span
+                        class="material-symbols-outlined">close</span></button>
+            </div>
+            <textarea id="msg-text" rows="4" placeholder="¡Hola Dra. Jenkins! Me gustaría hablar sobre..."
+                class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm focus:ring-2 focus:ring-primary outline-none resize-none mb-4"></textarea>
+            <button onclick="sendMessage()"
+                class="w-full py-3 bg-primary text-white font-bold rounded-xl hover:bg-primary/90 flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined text-lg">send</span> Enviar Mensaje
+            </button>
+        </div>
+    </div>
+
+    <!-- Top Navigation Bar -->
+    <header class="sticky top-0 z-30 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center gap-8">
+                    <div class="flex items-center gap-2 text-primary cursor-pointer"
+                        onclick="window.location.href='tutor_home.html'">
+                        <span class="material-symbols-outlined text-3xl">school</span>
+                        <h1 class="text-xl font-bold tracking-tight">EduTutor</h1>
+                    </div>
+                    <nav class="hidden md:flex items-center gap-6">
+                        <a class="text-sm font-medium hover:text-primary transition-colors cursor-pointer"
+                            onclick="window.location.href='tutor_home.html'">Buscar Tutores</a>
+                        <a class="text-sm font-medium hover:text-primary transition-colors cursor-pointer"
+                            onclick="window.location.href='perfil_estudiante.html'">Mis Clases</a>
+                        <a class="text-sm font-medium hover:text-primary transition-colors cursor-pointer"
+                            onclick="showToast('¡Mensajes abiertos!', 'chat')">Mensajes</a>
+                        <a class="text-sm font-medium hover:text-primary transition-colors cursor-pointer"
+                            onclick="showToast('¡Recursos abiertos!', 'library_books')">Recursos</a>
+                    </nav>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button onclick="toggleDarkMode()" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"
+                        title="Toggle dark mode">
+                        <span class="material-symbols-outlined" id="dark-icon">dark_mode</span>
+                    </button>
+                    <button onclick="showToast('Sin nuevas notificaciones', 'notifications');"
+                        class="p-2 text-slate-500 hover:bg-slate-100 rounded-full relative">
+                        <span class="material-symbols-outlined">notifications</span>
+                        <span class="absolute top-1.5 right-1.5 size-2 bg-red-500 rounded-full"></span>
+                    </button>
+                    <a onclick="window.location.href='perfil_estudiante.html'"
+                        class="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold overflow-hidden cursor-pointer">
+                        <img alt="Profile" class="w-full h-full object-cover"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCOuL9-gRq52A4OF97gLRj0mvkpdqYreSBcchqUEoF9psG1U1WtKLM31erU_nxNV0Rr1vhrs0CJQAJfJJDEUFVLviAc_pZ08msQIJqFnWzaldt74QFcwJRq1-da7oz326GpG3qoKOZ4RZ3GpQa8Xx7ovWovBDw4lae-Ft3P_aR9b4TyFekoQ37rJOceI8bKeVna1Ac8pSOsrAPvCj7_mj29bXnn5si6WnvKufnGTFmG1B1edO-dmzyFyx9iUYYTXiElBKLmOS9bC30" />
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Breadcrumbs -->
+        <nav class="flex items-center gap-2 text-sm text-slate-500 mb-6">
+            <a class="hover:text-primary cursor-pointer"
+                onclick="window.location.href='tutor_home.html'">Inicio</a>
+            <span class="material-symbols-outlined text-xs">chevron_right</span>
+            <a class="hover:text-primary cursor-pointer"
+                onclick="window.location.href='tutor_home.html'">Matemáticas</a>
+            <span class="material-symbols-outlined text-xs">chevron_right</span>
+            <span class="text-slate-900 dark:text-slate-100 font-medium">Dr. Sarah Jenkins</span>
+        </nav>
+        <div id="tutor-not-found" class="hidden py-20 text-center">
+            <span class="material-symbols-outlined text-6xl text-slate-300 mb-4">search_off</span>
+            <h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-2">Tutor no encontrado</h2>
+            <p class="text-slate-500 mb-6">No hemos podido encontrar el perfil del tutor que buscas.</p>
+            <button onclick="window.location.href='tutor_home.html'" class="px-6 py-3 bg-primary text-white rounded-xl font-bold hover:bg-primary/90">
+                Volver a Búsqueda
+            </button>
+        </div>
+
+        <div id="tutor-loading" class="flex justify-center items-center py-20">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        </div>
+
+        <div id="tutor-content" class="hidden flex-col lg:flex-row gap-8">
+            <!-- Left Column: Profile Info -->
+            <div class="flex-1 space-y-8">
+                <!-- Profile Header Card -->
+                <div
+                    class="bg-white dark:bg-slate-900 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-800">
+                    <div class="flex flex-col md:flex-row gap-6 items-start">
+                        <div class="relative w-36 h-36 bg-slate-100 dark:bg-slate-800 rounded-[1.25rem] p-1.5 shadow-sm border border-slate-200 dark:border-slate-700 flex-shrink-0">
+                            <img id="tutor-image" alt=""
+                                class="w-full h-full rounded-xl object-cover"
+                                src="" />
+                            <div class="absolute -bottom-2 -right-2 bg-primary text-white rounded-full p-1.5 border-2 border-white dark:border-slate-900 shadow-sm flex items-center justify-center">
+                                <span class="material-symbols-outlined text-[14px] font-bold block">verified</span>
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex flex-wrap justify-between items-start gap-4">
+                                <div>
+                                    <h2 id="tutor-name" class="text-2xl font-bold"></h2>
+                                    <p id="tutor-title" class="text-slate-600 dark:text-slate-400 font-medium"></p>
+                                    <div class="flex items-center gap-2 mt-2">
+                                        <div id="tutor-stars" class="flex text-amber-400">
+                                            <!-- Stars rendered by JS -->
+                                        </div>
+                                        <span id="tutor-rating" class="font-bold"></span>
+                                        <span id="tutor-reviews-count" class="text-slate-500 text-sm"></span>
+                                    </div>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button onclick="openMsgModal()"
+                                        class="px-4 py-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg font-semibold text-sm flex items-center gap-2 hover:bg-slate-200 transition-colors">
+                                        <span class="material-symbols-outlined text-lg">chat</span> Mensaje
+                                    </button>
+                                    <button onclick="toggleSave(this)" id="save-btn"
+                                        class="px-4 py-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg font-semibold text-sm flex items-center gap-2 hover:bg-red-50 hover:text-red-500 transition-colors">
+                                        <span class="material-symbols-outlined text-lg"
+                                            id="save-icon">favorite_border</span>
+                                        <span id="save-label">Guardar</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="tutor-badges" class="mt-4 flex flex-wrap gap-2">
+                                <span
+                                    class="px-3 py-1 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 text-xs font-bold rounded-full flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-xs">check_circle</span> Background
+                                    Checked
+                                </span>
+                                <span
+                                    class="px-3 py-1 bg-primary/10 text-primary text-xs font-bold rounded-full flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-xs">workspace_premium</span> Top Rated
+                                    2023
+                                </span>
+                                <span
+                                    class="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-xs font-bold rounded-full flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-xs">schedule</span> Typically replies in
+                                    15m
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabs -->
+                <div class="border-b border-slate-200 dark:border-slate-800">
+                    <nav class="flex gap-8" id="tabs-nav">
+                        <button onclick="switchTab('about')" class="pb-4 text-sm font-bold active-tab tab-btn"
+                            data-tab="about">Sobre Mí</button>
+                        <button onclick="switchTab('subjects')"
+                            class="pb-4 text-sm font-bold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 tab-btn"
+                            data-tab="subjects">Materias</button>
+                        <button onclick="switchTab('education')"
+                            class="pb-4 text-sm font-bold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 tab-btn"
+                            data-tab="education">Educación</button>
+                        <button onclick="switchTab('reviews')"
+                            class="pb-4 text-sm font-bold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 tab-btn"
+                            data-tab="reviews">Reviews (482)</button>
+                    </nav>
+                </div>
+
+                <!-- Tab: About Me -->
+                <div id="tab-about" class="tab-content active space-y-4">
+                    <h3 class="text-xl font-bold">Sobre Mí</h3>
+                    <div id="tutor-about" class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                        <!-- Description rendered by JS -->
+                    </div>
+                    <div class="bg-primary/5 border border-primary/20 rounded-xl p-4 flex items-start gap-3 mt-4">
+                        <span class="material-symbols-outlined text-primary">info</span>
+                        <p class="text-sm text-slate-600 dark:text-slate-400"><strong class="text-primary">Pro
+                                tip:</strong> La primera sesión está garantizada — satisfacción al 100% o te devolvemos tu dinero.</p>
+                    </div>
+                </div>
+
+                <!-- Tab: Subjects -->
+                <div id="tab-subjects" class="tab-content space-y-4">
+                    <h3 class="text-xl font-bold">Materias que Enseña</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-bold text-sm text-slate-500 uppercase tracking-wider mb-3">Matemáticas</h4>
+                            <div class="flex flex-wrap gap-2">
+                                <span
+                                    class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm hover:border-primary hover:text-primary cursor-pointer transition-colors">Algebra
+                                    I &amp; II</span>
+                                <span
+                                    class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm hover:border-primary hover:text-primary cursor-pointer transition-colors">Geometría</span>
+                                <span
+                                    class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm hover:border-primary hover:text-primary cursor-pointer transition-colors">Calculus
+                                    BC</span>
+                                <span
+                                    class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm hover:border-primary hover:text-primary cursor-pointer transition-colors">Estadística</span>
+                                <span
+                                    class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm hover:border-primary hover:text-primary cursor-pointer transition-colors">Linear
+                                    Algebra</span>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-sm text-slate-500 uppercase tracking-wider mb-3">Test Prep &amp;
+                                Science</h4>
+                            <div class="flex flex-wrap gap-2">
+                                <span
+                                    class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-primary/30 rounded-lg text-sm font-medium text-primary cursor-pointer hover:bg-primary hover:text-white transition-colors">SAT
+                                    Math</span>
+                                <span
+                                    class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-primary/30 rounded-lg text-sm font-medium text-primary cursor-pointer hover:bg-primary hover:text-white transition-colors">GRE
+                                    Quantitative</span>
+                                <span
+                                    class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm hover:border-primary hover:text-primary cursor-pointer transition-colors">Physics
+                                    (AP)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab: Education -->
+                <div id="tab-education" class="tab-content space-y-4">
+                    <h3 class="text-xl font-bold">Educación y Credenciales</h3>
+                    <div class="space-y-4">
+                        <div
+                            class="flex gap-4 items-start p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800">
+                            <div
+                                class="w-12 h-12 bg-slate-100 dark:bg-slate-800 rounded-lg flex items-center justify-center text-slate-500 shrink-0">
+                                <span class="material-symbols-outlined">school</span>
+                            </div>
+                            <div>
+                                <h5 class="font-bold">Doctorado en Matemáticas Aplicadas</h5>
+                                <p class="text-sm text-slate-500">Stanford University • 2012-2016</p>
+                            </div>
+                        </div>
+                        <div
+                            class="flex gap-4 items-start p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800">
+                            <div
+                                class="w-12 h-12 bg-slate-100 dark:bg-slate-800 rounded-lg flex items-center justify-center text-slate-500 shrink-0">
+                                <span class="material-symbols-outlined">history_edu</span>
+                            </div>
+                            <div>
+                                <h5 class="font-bold">Docente Certificada por la Junta Nacional (NBCT)</h5>
+                                <p class="text-sm text-slate-500">Especialidad en Matemáticas Avanzadas • 2018</p>
+                            </div>
+                        </div>
+                        <div
+                            class="flex gap-4 items-start p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800">
+                            <div
+                                class="w-12 h-12 bg-slate-100 dark:bg-slate-800 rounded-lg flex items-center justify-center text-slate-500 shrink-0">
+                                <span class="material-symbols-outlined">military_tech</span>
+                            </div>
+                            <div>
+                                <h5 class="font-bold">Licenciatura en Matemáticas</h5>
+                                <p class="text-sm text-slate-500">MIT • 2008-2012 • Con Máximos Honores</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab: Reviews -->
+                <div id="tab-reviews" class="tab-content space-y-6">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xl font-bold">Reseñas de Estudiantes</h3>
+                        <div class="flex items-center gap-2">
+                            <select onchange="sortReviews(this.value)"
+                                class="text-sm border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 bg-white dark:bg-slate-800 focus:ring-primary text-slate-700 dark:text-slate-300">
+                                <option value="recent">Más Recientes</option>
+                                <option value="highest">Mejor Valoradas</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="reviews-list" class="space-y-4">
+                        <!-- Reviews rendered by JS -->
+                    </div>
+                    <button onclick="loadMoreReviews()" id="load-more-btn"
+                        class="w-full py-3 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 transition-colors">
+                        Load More Reviews
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right Column: Booking Widget -->
+            <div class="w-full lg:w-[400px]">
+                <div class="sticky top-24 space-y-4">
+                    <!-- Quick Help -->
+                    <div class="bg-primary/10 border border-primary/20 rounded-xl p-4">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="p-2 bg-primary rounded-lg text-white">
+                                <span class="material-symbols-outlined block">bolt</span>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-primary">¿Necesitas ayuda ahora?</h4>
+                                <p class="text-xs text-primary/80">Sesiones bajo demanda que comienzan de inmediato</p>
+                            </div>
+                        </div>
+                        <button onclick="quickBook()"
+                            class="w-full py-3 bg-primary text-white font-bold rounded-lg shadow-lg shadow-primary/30 hover:bg-primary/90 transition-all flex items-center justify-center gap-2">
+                            Reserva Rápida <span class="text-xs bg-white/20 px-2 py-0.5 rounded-full">$85.000 COP/hr</span>
+                        </button>
+                    </div>
+
+                    <!-- Main Booking Card -->
+                    <div
+                        class="bg-white dark:bg-slate-900 rounded-xl shadow-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+                        <div class="p-5 border-b border-slate-100 dark:border-slate-800">
+                            <div class="flex justify-between items-end mb-4">
+                                <div>
+                                    <p class="text-slate-500 text-xs font-bold uppercase tracking-wider">Tarifa Programada
+                                    </p>
+                                    <p class="text-2xl font-bold">$<span id="tutor-price"></span> COP<span
+                                            class="text-sm font-normal text-slate-500">/hour</span></p>
+                                </div>
+                                <div class="bg-slate-100 dark:bg-slate-800 rounded-lg p-1 flex gap-1">
+                                    <button id="btn-virtual" onclick="setSessionType('Virtual')"
+                                        class="px-3 py-1.5 text-xs font-bold bg-white dark:bg-slate-700 rounded-md shadow-sm">Virtual</button>
+                                    <button id="btn-inperson" onclick="setSessionType('Presencial')"
+                                        class="px-3 py-1.5 text-xs font-bold text-slate-500 hover:text-slate-900 rounded-md">Presencial</button>
+                                </div>
+                            </div>
+                            <!-- Calendar -->
+                            <div class="space-y-4">
+                                <div>
+                                    <div class="flex items-center justify-between mb-2">
+                                        <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Select
+                                            Date</label>
+                                        <div class="flex gap-1">
+                                            <button onclick="prevMonth()"
+                                                class="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded"><span
+                                                    class="material-symbols-outlined text-sm">chevron_left</span></button>
+                                            <span id="month-label" class="text-xs font-bold px-2 py-1"></span>
+                                            <button onclick="nextMonth()"
+                                                class="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded"><span
+                                                    class="material-symbols-outlined text-sm">chevron_right</span></button>
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-cols-7 gap-1 text-center mb-1">
+                                        <div class="text-[10px] text-slate-400 font-bold">M</div>
+                                        <div class="text-[10px] text-slate-400 font-bold">T</div>
+                                        <div class="text-[10px] text-slate-400 font-bold">W</div>
+                                        <div class="text-[10px] text-slate-400 font-bold">T</div>
+                                        <div class="text-[10px] text-slate-400 font-bold">F</div>
+                                        <div class="text-[10px] text-slate-400 font-bold">S</div>
+                                        <div class="text-[10px] text-slate-400 font-bold">S</div>
+                                    </div>
+                                    <div id="calendar-grid" class="grid grid-cols-7 gap-1 text-center"></div>
+                                </div>
+                                <!-- Time Slots -->
+                                <div>
+                                    <label
+                                        class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 block">Available
+                                        Slots (<span id="selected-date-label">Select a date</span>)</label>
+                                    <div id="time-slots" class="grid grid-cols-3 gap-2">
+                                        <p class="col-span-3 text-xs text-slate-400 text-center py-2">Please select a
+                                            date first</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-5 space-y-4">
+                            <div class="flex justify-between items-center text-sm">
+                                <span class="text-slate-500">Comisión de Servicio</span>
+                                <span class="font-medium">$4.500 COP</span>
+                            </div>
+                            <div class="flex justify-between items-center text-lg font-bold">
+                                <span>Total</span>
+                                <span class="text-primary">$79.500 COP</span>
+                            </div>
+                            <button onclick="openBookModal()"
+                                class="w-full py-4 bg-slate-900 dark:bg-primary text-white font-bold rounded-xl hover:opacity-90 transition-opacity">
+                                Confirm Booking
+                            </button>
+                            <p class="text-[10px] text-center text-slate-400">No charge until after the session is
+                                completed.</p>
+                        </div>
+                    </div>
+
+                    <!-- Trust Factor -->
+                    <div
+                        class="bg-white dark:bg-slate-900 rounded-xl p-4 border border-slate-200 dark:border-slate-800 flex gap-4 items-center">
+                        <div class="text-primary">
+                            <span class="material-symbols-outlined text-3xl">verified_user</span>
+                        </div>
+                        <div class="text-xs">
+                            <p class="font-bold">Garantía EduTutor</p>
+                            <p class="text-slate-500">100% satisfaction or your first hour is on us. Secure payments via
+                                Stripe.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="mt-20 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-12">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <div class="flex justify-center items-center gap-2 text-primary mb-4 cursor-pointer"
+                onclick="window.location.href='tutor_home.html'">
+                <span class="material-symbols-outlined text-2xl">school</span>
+                <h1 class="text-lg font-bold">EduTutor</h1>
+            </div>
+            <p class="text-slate-500 text-sm mb-6">Conectando mentes brillantes desde 2018.</p>
+            <div class="flex justify-center gap-8 text-sm font-medium text-slate-600 dark:text-slate-400">
+                <a class="hover:text-primary cursor-pointer" onclick="showToast('¡Sección Nosotros abierta!', 'info')">About
+                    Us</a>
+                <a class="hover:text-primary cursor-pointer"
+                    onclick="showToast('¡Información de seguridad abierta!', 'verified_user')">Seguridad</a>
+                <a class="hover:text-primary cursor-pointer" onclick="showToast('¡Soporte abierto!', 'help')">Soporte</a>
+                <a class="hover:text-primary cursor-pointer" onclick="showToast('¡Términos abiertos!', 'gavel')">Términos</a>
+            </div>
+        </div>
+    </footer>
+
+    
+<script src="../js/utils.js"></script>
+<script src="../js/tutor_profile.js"></script>
+</body>
+
+</html>

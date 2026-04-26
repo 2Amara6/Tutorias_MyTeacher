@@ -1,0 +1,446 @@
+<!doctype html>
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script src="../js/tailwind.config.js"></script>
+    <style>
+      body {
+        font-family: "Lexend", sans-serif;
+      }
+      .material-symbols-outlined {
+        font-variation-settings:
+          "FILL" 0,
+          "wght" 400,
+          "GRAD" 0,
+          "opsz" 24;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100"
+  >
+    <div class="flex h-screen flex-col overflow-hidden">
+      <!-- Top Navigation Bar -->
+      <header
+        class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-6 py-3 shrink-0"
+      >
+        <div class="flex items-center gap-6">
+          <div
+            class="flex items-center gap-3 text-primary cursor-pointer"
+            onclick="window.location.href = 'tutor_home.html'"
+          >
+            <span class="material-symbols-outlined text-3xl">school</span>
+            <h2
+              class="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight tracking-tight"
+            >
+              TutorMaster
+            </h2>
+          </div>
+          <div
+            class="hidden md:flex items-center bg-background-light dark:bg-slate-800 rounded-lg px-3 py-1.5 w-64"
+          >
+            <span class="material-symbols-outlined text-slate-500 text-sm"
+              >search</span
+            >
+            <input
+              class="bg-transparent border-none focus:ring-0 text-sm w-full placeholder:text-slate-500"
+              placeholder="Buscar..."
+              type="text"
+            />
+          </div>
+        </div>
+        <div class="flex items-center gap-4">
+          <button
+            onclick="document.documentElement.classList.toggle('dark')"
+            class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400"
+          >
+            <span class="material-symbols-outlined">dark_mode</span>
+          </button>
+          <button
+            class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400"
+          >
+            <span class="material-symbols-outlined">notifications</span>
+          </button>
+          <div
+            class="h-8 w-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center overflow-hidden"
+            onclick="window.location.href = 'perfil_estudiante.html'"
+          >
+            <img
+              alt="Perfil Usuario"
+              data-alt="Foto de perfil de Andrea"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuCOuL9-gRq52A4OF97gLRj0mvkpdqYreSBcchqUEoF9psG1U1WtKLM31erU_nxNV0Rr1vhrs0CJQAJfJJDEUFVLviAc_pZ08msQIJqFnWzaldt74QFcwJRq1-da7oz326GpG3qoKOZ4RZ3GpQa8Xx7ovWovBDw4lae-Ft3P_aR9b4TyFekoQ37rJOceI8bKeVna1Ac8pSOsrAPvCj7_mj29bXnn5si6WnvKufnGTFmG1B1edO-dmzyFyx9iUYYTXiElBKLmOS9bC30
+"
+            />
+          </div>
+        </div>
+      </header>
+      <div class="flex flex-1 overflow-hidden">
+        <!-- Sidebar - Chat List -->
+        <aside
+          class="w-80 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col shrink-0"
+        >
+          <div class="p-4 border-b border-slate-100 dark:border-slate-800">
+            <div class="flex items-center justify-between mb-4">
+              <h1 class="text-xl font-bold">Mensajes</h1>
+              <button
+                class="p-2 bg-primary text-white rounded-lg flex items-center justify-center"
+              >
+                <span class="material-symbols-outlined text-sm"
+                  >edit_square</span
+                >
+              </button>
+            </div>
+            <div class="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+              <button
+                class="px-4 py-1.5 rounded-full bg-primary text-white text-xs font-medium whitespace-nowrap"
+              >
+                Todos
+              </button>
+              <button
+                class="px-4 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-xs font-medium whitespace-nowrap"
+              >
+                Tutores
+              </button>
+              <button
+                class="px-4 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-xs font-medium whitespace-nowrap"
+              >
+                No leídos
+              </button>
+            </div>
+          </div>
+          <div class="flex-1 overflow-y-auto">
+            <!-- Chat Item Active -->
+            <div
+              class="flex items-center gap-4 bg-primary/5 border-l-4 border-primary px-4 py-4 cursor-pointer"
+            >
+              <div class="relative">
+                <img
+                  alt="Sarah Jenkins"
+                  class="size-12 rounded-full border-2 border-white dark:border-slate-900 shadow-sm"
+                  data-alt="Retrato de un tutor profesional con fondo azul"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFM9uJFRzShDrkztGDRdisHG_YsaFa0AOkVbGMa9MymUdBtb472xdhjltkpBZa856il_VfCKh-US3Z6VJhFSlZHh1BxI2YonUrYFgcW-uo_D9unh4SHb7PPGcC2di_VAWzL8-otj35HSFtnTioVdBjA5Jsz9W7iBYUwj7M6qCMkmhIq-pjzy4jevmBNYnCnXfu5La7UMQSXtg8NPtOUun9WjlVBqYZXsHDNvZBQRfgXgPXNdWPrM6gJXD4DWRW-gJHrVp0syIfUFg"
+                />
+                <div
+                  class="absolute bottom-0 right-0 size-3 bg-green-500 border-2 border-white dark:border-slate-900 rounded-full"
+                ></div>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex justify-between items-baseline">
+                  <h3
+                    class="text-sm font-semibold text-slate-900 dark:text-slate-100 truncate"
+                  >
+                    Sarah Jenkins (Tutor)
+                  </h3>
+                  <span class="text-[10px] text-primary font-bold uppercase"
+                    >Ahora</span
+                  >
+                </div>
+                <p
+                  class="text-xs text-slate-600 dark:text-slate-400 truncate font-medium"
+                >
+                  ¿Tienes alguna duda con la tarea?
+                </p>
+              </div>
+            </div>
+            <!-- Chat Item -->
+            <div
+              class="flex items-center gap-4 hover:bg-slate-50 dark:hover:bg-slate-800 px-4 py-4 cursor-pointer transition-colors border-l-4 border-transparent"
+            >
+              <div class="relative">
+                <img
+                  alt="Ana García"
+                  class="size-12 rounded-full border-2 border-white dark:border-slate-900"
+                  data-alt="Retrato de una estudiante joven sonriente"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuASc9gqhX8ad5RHWiJ68TqX0dK79OQB6CX9oeDxxSSvbAD7g9c69nSt4BHxd8KEUPSCC9kjwqEDgdY9m8ghw4blMxeB-d3ZQlBdb5fGCpOaG_N9coVYnNuxec5QIq2QFmHAfuou2tLoCsG-mcQzkRbUD53OH6ruSFGpsbtbIPFcz-UB-9BhDYLa62jdWdxeHrf04X25DP9ON_Qy4CKM9nRF9Ew8MQWVZFfQG2JusS2LAtgUqaVsd3eiu_yzM8mtRJVWFPXiilnQ0LA"
+                />
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex justify-between items-baseline">
+                  <h3
+                    class="text-sm font-semibold text-slate-900 dark:text-slate-100 truncate"
+                  >
+                    Ana García
+                  </h3>
+                  <span class="text-[10px] text-slate-500 uppercase">Ayer</span>
+                </div>
+                <p class="text-xs text-slate-500 dark:text-slate-400 truncate">
+                  Gracias por la clase de hoy, me sirvió mucho.
+                </p>
+              </div>
+            </div>
+            <!-- Chat Item -->
+            <div
+              class="flex items-center gap-4 hover:bg-slate-50 dark:hover:bg-slate-800 px-4 py-4 cursor-pointer transition-colors border-l-4 border-transparent"
+            >
+              <div class="relative">
+                <img
+                  alt="Dr. Martinez"
+                  class="size-12 rounded-full border-2 border-white dark:border-slate-900"
+                  data-alt="Foto de perfil de un profesor con gafas"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuCiN12u-QKr-kcwCKvnAjwaG-q7p3HdCD_x-YixlcupZWsfeoTndBoLpqt8ogGCIerbUVfZbkxAQy5Pmwf25gK0PVBJkgdMo6p9aHbnj-PHtKYislO1B2Xr7vHjQ-GVmMAVx4XGw6lVGcN-Zp6Wh_2kRLQe4oBsLAl0Ukqz3GArNeE3UkfeBNUX1s0ZcX4rtUHeobOqSygg9J_u524PsGDEe_s_dobBbheOMilpHmMvuu1dF4XZ5bP1orN3ZgGTJc590Fihe8pasJE"
+                />
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex justify-between items-baseline">
+                  <h3
+                    class="text-sm font-semibold text-slate-900 dark:text-slate-100 truncate"
+                  >
+                    Dr. Roberto Martínez
+                  </h3>
+                  <span class="text-[10px] text-slate-500 uppercase">Lun</span>
+                </div>
+                <p class="text-xs text-slate-500 dark:text-slate-400 truncate">
+                  He revisado el borrador de tu tesis, revisa el archivo.
+                </p>
+              </div>
+            </div>
+            <!-- Chat Item -->
+            <div
+              class="flex items-center gap-4 hover:bg-slate-50 dark:hover:bg-slate-800 px-4 py-4 cursor-pointer transition-colors border-l-4 border-transparent"
+            >
+              <div class="relative">
+                <img
+                  alt="Elena V."
+                  class="size-12 rounded-full border-2 border-white dark:border-slate-900"
+                  data-alt="Perfil de una tutora joven con auriculares"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwq3OR9M6aCM25gli0fOKeNHy-6biaCDmsHV8XYD7sRrwjEcIKbI-8fml6pocq6loyqTZ07MKjxByIHRwRldzmCIfDWNUbXCf_XDyy-a2urxcSr36OfPReunr0w7rfjLeKRVgoj4Vs9FL-l8tzot4bLJLPCAkGJZNUtfZ02JYyKwHEMrWE71JYZP1_VovRN9chbIy1kxlHg5UNIsL0SxfhQxZioqcjiddTPEOCU2RzOWFTsEWb3itRTE8FLbfRdDgMYhkpexrWO_4"
+                />
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex justify-between items-baseline">
+                  <h3
+                    class="text-sm font-semibold text-slate-900 dark:text-slate-100 truncate"
+                  >
+                    Elena Villanueva
+                  </h3>
+                  <span class="text-[10px] text-slate-500 uppercase"
+                    >23 Oct</span
+                  >
+                </div>
+                <p class="text-xs text-slate-500 dark:text-slate-400 truncate">
+                  La sesión de matemáticas se reprogramó para las 4.
+                </p>
+              </div>
+            </div>
+          </div>
+        </aside>
+        <!-- Main Chat Area -->
+        <main
+          class="flex-1 flex flex-col bg-background-light dark:bg-background-dark relative"
+        >
+          <!-- Chat Header -->
+          <div
+            class="flex items-center justify-between px-6 py-4 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-sm z-10"
+          >
+            <div class="flex items-center gap-3">
+              <div
+                class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border border-slate-200 dark:border-slate-700"
+                data-alt="Avatar del tutor Sarah Jenkins"
+                style="
+                  background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuBFM9uJFRzShDrkztGDRdisHG_YsaFa0AOkVbGMa9MymUdBtb472xdhjltkpBZa856il_VfCKh-US3Z6VJhFSlZHh1BxI2YonUrYFgcW-uo_D9unh4SHb7PPGcC2di_VAWzL8-otj35HSFtnTioVdBjA5Jsz9W7iBYUwj7M6qCMkmhIq-pjzy4jevmBNYnCnXfu5La7UMQSXtg8NPtOUun9WjlVBqYZXsHDNvZBQRfgXgPXNdWPrM6gJXD4DWRW-gJHrVp0syIfUFg&quot;);
+                "
+              ></div>
+              <div>
+                <h2
+                  class="text-base font-bold text-slate-900 dark:text-slate-100 leading-tight"
+                >
+                  Sarah Jenkins
+                </h2>
+                <div class="flex items-center gap-1.5">
+                  <span class="size-2 bg-green-500 rounded-full"></span>
+                  <span class="text-xs text-slate-500 font-medium"
+                    >En línea</span
+                  >
+                </div>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <button
+                class="flex items-center gap-2 px-3 py-2 bg-primary/10 hover:bg-primary/20 text-primary rounded-lg text-sm font-bold transition-colors"
+              >
+                <span class="material-symbols-outlined text-lg">videocam</span>
+                <span class="hidden sm:inline">Videollamada</span>
+              </button>
+              <button
+                class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-lg"
+              >
+                <span class="material-symbols-outlined">call</span>
+              </button>
+              <button
+                class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-lg"
+              >
+                <span class="material-symbols-outlined">more_vert</span>
+              </button>
+            </div>
+          </div>
+          <!-- Messages Area -->
+          <div class="flex-1 overflow-y-auto p-6 flex flex-col gap-6">
+            <!-- Date Separator -->
+            <div class="flex justify-center">
+              <span
+                class="px-3 py-1 bg-slate-200/50 dark:bg-slate-800/50 text-slate-500 text-[10px] font-bold rounded-full uppercase tracking-wider"
+                >Hoy</span
+              >
+            </div>
+            <!-- Message Tutor -->
+            <div class="flex gap-3 max-w-[80%]">
+              <div
+                class="size-8 rounded-full bg-slate-200 dark:bg-slate-800 shrink-0 mt-auto overflow-hidden"
+              >
+                <img
+                  alt="Tutor"
+                  data-alt="Miniatura de perfil del tutor"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFM9uJFRzShDrkztGDRdisHG_YsaFa0AOkVbGMa9MymUdBtb472xdhjltkpBZa856il_VfCKh-US3Z6VJhFSlZHh1BxI2YonUrYFgcW-uo_D9unh4SHb7PPGcC2di_VAWzL8-otj35HSFtnTioVdBjA5Jsz9W7iBYUwj7M6qCMkmhIq-pjzy4jevmBNYnCnXfu5La7UMQSXtg8NPtOUun9WjlVBqYZXsHDNvZBQRfgXgPXNdWPrM6gJXD4DWRW-gJHrVp0syIfUFg"
+                />
+              </div>
+              <div class="flex flex-col gap-1">
+                <div
+                  class="bg-white dark:bg-slate-800 p-4 rounded-xl rounded-bl-none shadow-sm text-sm text-slate-800 dark:text-slate-200 border border-slate-200/50 dark:border-slate-700/50"
+                >
+                  Hola, he terminado de revisar los ejercicios de cálculo que
+                  enviaste anoche. ¡Buen trabajo con las integrales!
+                </div>
+                <span class="text-[10px] text-slate-400 font-medium"
+                  >10:25 AM</span
+                >
+              </div>
+            </div>
+            <!-- Message Student (Me) -->
+            <div class="flex gap-3 max-w-[80%] self-end flex-row-reverse">
+              <div
+                class="size-8 rounded-full bg-primary/10 shrink-0 mt-auto overflow-hidden"
+              >
+                <img
+                  alt="Yo"
+                  data-alt="Miniatura de perfil del estudiante"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuCOuL9-gRq52A4OF97gLRj0mvkpdqYreSBcchqUEoF9psG1U1WtKLM31erU_nxNV0Rr1vhrs0CJQAJfJJDEUFVLviAc_pZ08msQIJqFnWzaldt74QFcwJRq1-da7oz326GpG3qoKOZ4RZ3GpQa8Xx7ovWovBDw4lae-Ft3P_aR9b4TyFekoQ37rJOceI8bKeVna1Ac8pSOsrAPvCj7_mj29bXnn5si6WnvKufnGTFmG1B1edO-dmzyFyx9iUYYTXiElBKLmOS9bC30"
+                />
+              </div>
+              <div class="flex flex-col gap-1 items-end">
+                <div
+                  class="bg-primary text-white p-4 rounded-xl rounded-br-none shadow-sm text-sm border border-primary/20"
+                >
+                  Muchas gracias, Sarah. Me costó un poco la parte de
+                  sustitución trigonométrica. ¿Podríamos repasarlo hoy?
+                </div>
+                <span class="text-[10px] text-slate-400 font-medium"
+                  >10:28 AM • Leído</span
+                >
+              </div>
+            </div>
+            <!-- Message Tutor -->
+            <div class="flex gap-3 max-w-[80%]">
+              <div
+                class="size-8 rounded-full bg-slate-200 dark:bg-slate-800 shrink-0 mt-auto overflow-hidden"
+              >
+                <img
+                  alt="Tutor"
+                  data-alt="Miniatura de perfil del tutor"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFM9uJFRzShDrkztGDRdisHG_YsaFa0AOkVbGMa9MymUdBtb472xdhjltkpBZa856il_VfCKh-US3Z6VJhFSlZHh1BxI2YonUrYFgcW-uo_D9unh4SHb7PPGcC2di_VAWzL8-otj35HSFtnTioVdBjA5Jsz9W7iBYUwj7M6qCMkmhIq-pjzy4jevmBNYnCnXfu5La7UMQSXtg8NPtOUun9WjlVBqYZXsHDNvZBQRfgXgPXNdWPrM6gJXD4DWRW-gJHrVp0syIfUFg"
+                />
+              </div>
+              <div class="flex flex-col gap-1">
+                <div
+                  class="bg-white dark:bg-slate-800 p-4 rounded-xl rounded-bl-none shadow-sm text-sm text-slate-800 dark:text-slate-200 border border-slate-200/50 dark:border-slate-700/50"
+                >
+                  Claro que sí. Justo por eso te escribía. ¿Tienes alguna duda
+                  específica con la tarea o prefieres que hagamos un ejemplo
+                  desde cero?
+                </div>
+                <span class="text-[10px] text-slate-400 font-medium"
+                  >10:30 AM</span
+                >
+              </div>
+            </div>
+            <!-- Attached File Preview -->
+            <div class="flex gap-3 max-w-[80%]">
+              <div class="size-8 rounded-full shrink-0 opacity-0"></div>
+              <div class="flex flex-col gap-1">
+                <div
+                  class="bg-white dark:bg-slate-800 p-3 rounded-xl shadow-sm text-sm border border-slate-200/50 dark:border-slate-700/50 flex items-center gap-3"
+                >
+                  <div
+                    class="size-10 bg-red-100 dark:bg-red-900/30 text-red-600 rounded-lg flex items-center justify-center"
+                  >
+                    <span class="material-symbols-outlined"
+                      >picture_as_pdf</span
+                    >
+                  </div>
+                  <div class="flex-1 pr-4">
+                    <p
+                      class="font-semibold text-slate-900 dark:text-slate-100 text-xs"
+                    >
+                      Guia_Ejercicios_V2.pdf
+                    </p>
+                    <p class="text-[10px] text-slate-500">2.4 MB</p>
+                  </div>
+                  <button class="text-primary">
+                    <span class="material-symbols-outlined">download</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Writing Area -->
+          <div
+            class="px-6 py-4 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800"
+          >
+            <div class="flex items-end gap-3 max-w-5xl mx-auto">
+              <div class="flex gap-1 pb-1">
+                <button
+                  class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 rounded-lg transition-colors"
+                >
+                  <span class="material-symbols-outlined">add_circle</span>
+                </button>
+                <button
+                  class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 rounded-lg transition-colors"
+                >
+                  <span class="material-symbols-outlined">image</span>
+                </button>
+              </div>
+              <div
+                class="flex-1 bg-background-light dark:bg-slate-800 rounded-2xl px-4 py-2 flex items-center gap-2 border border-slate-200 dark:border-slate-700 focus-within:border-primary/50 transition-all"
+              >
+                <textarea
+                  class="bg-transparent border-none focus:ring-0 text-sm w-full py-1 resize-none placeholder:text-slate-500"
+                  placeholder="Escribe un mensaje..."
+                  rows="1"
+                ></textarea>
+                <button
+                  class="text-slate-500 hover:text-primary transition-colors"
+                >
+                  <span class="material-symbols-outlined">mood</span>
+                </button>
+              </div>
+              <button
+                class="size-10 bg-primary text-white rounded-full flex items-center justify-center shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all"
+              >
+                <span class="material-symbols-outlined text-xl">send</span>
+              </button>
+            </div>
+            <div class="mt-2 text-center">
+              <p class="text-[10px] text-slate-400">
+                Presiona Enter para enviar
+              </p>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

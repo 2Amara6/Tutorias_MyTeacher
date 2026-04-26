@@ -1,0 +1,46 @@
+body {
+  font-family: "Lexend", sans-serif;
+}
+
+.sidebar-item-active {
+  background-color: rgba(19, 127, 236, 0.1);
+  color: #137fec;
+  border-right: 3px solid #137fec;
+}
+
+#toast {
+  transition:
+    opacity 0.4s,
+    transform 0.4s;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+#toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+#notif-panel {
+  display: none;
+}
+
+#notif-panel.open {
+  display: block;
+}
+
+#settings-modal {
+  display: none;
+}
+
+#settings-modal.active {
+  display: flex;
+}
+
+#reschedule-modal {
+  display: none;
+}
+
+#reschedule-modal.active {
+  display: flex;
+}

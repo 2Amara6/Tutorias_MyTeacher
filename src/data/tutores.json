@@ -1,0 +1,47 @@
+[
+  {
+    "id": "sarah",
+    "name": "Sarah Jenkins",
+    "title": "Doctorado en Matemáticas Aplicadas • 12 Years Experience",
+    "rating": 4.9,
+    "reviewsCount": 482,
+    "price": 45000,
+    "img": "https://lh3.googleusercontent.com/aida-public/AB6AXuBFM9uJFRzShDrkztGDRdisHG_YsaFa0AOkVbGMa9MymUdBtb472xdhjltkpBZa856il_VfCKh-US3Z6VJhFSlZHh1BxI2YonUrYFgcW-uo_D9unh4SHb7PPGcC2di_VAWzL8-otj35HSFtnTioVdBjA5Jsz9W7iBYUwj7M6qCMkmhIq-pjzy4jevmBNYnCnXfu5La7UMQSXtg8NPtOUun9WjlVBqYZXsHDNvZBQRfgXgPXNdWPrM6gJXD4DWRW-gJHrVp0syIfUFg",
+    "about": "¡Hola! Soy Sarah, una educadora apasionada con más de una década de experiencia ayudando a los estudiantes a dominar conceptos matemáticos complejos. Mi filosofía de enseñanza se centra en construir una base sólida de primeros principios antes de abordar la resolución de problemas avanzados. Ya sea que tengas dificultades con el álgebra de la escuela secundaria o te prepares para el cálculo de nivel universitario, adapto mi enfoque a tu estilo de aprendizaje único.",
+    "badges": ["Background Checked", "Top Rated 2023", "Typically replies in 15m"]
+  },
+  {
+    "id": "david",
+    "name": "David Chen",
+    "title": "Ingeniero de Software Senior • 8 Años de Experiencia",
+    "rating": 5.0,
+    "reviewsCount": 89,
+    "price": 60000,
+    "img": "https://lh3.googleusercontent.com/aida-public/AB6AXuCttohCMfgWsIZ0MfHZLkFqjElOISFWncW0S2kZuU4LlfLi07yNLTMtrVC44I89LV1KcBlu-kvj_3aqjp5SEx_iGO9OJ3rODk4vpsYuZNQEUCsozkcfjV7Zu_GIw3VprEck8mavbsPMsVKJPwqc5Zm9VpnkReEMRHSrzR33TgIJJADneg6jK8LSOZ3G2M09d3hqd7WRoYPgtoVEx1-ZP0tL6jsdkwsFG7YS3_X6QaBdEeWhBT_1qNYp8gF4_q__G4BxmmMT1_LvTug",
+    "about": "¡Hola! Soy David, experto en Informática y Programación. Trabajo principalmente con Python y Estructuras de Datos. Me encanta enseñar con ejemplos del mundo real para que el aprendizaje sea divertido y práctico. Puedo ayudarte desde lo básico hasta algoritmos avanzados.",
+    "badges": ["Verificado", "Experto en Python"]
+  },
+  {
+    "id": "elena",
+    "name": "Elias Rodriguez",
+    "title": "Licenciada en Lingüística • 5 Años de Experiencia",
+    "rating": 4.8,
+    "reviewsCount": 210,
+    "price": 35000,
+    "img": "https://lh3.googleusercontent.com/aida-public/AB6AXuB_QpX42UzxMpr9ZVEkek1mLf6pZzXMGtav81ftYAdMXR63lxTu5ICgSt_OxCnJwaoynm5aQbaHRAVJ_FUGJOU04SbKdnwvCwMeNBuYn07e-TMdI31ABiFssJBVgGcEd35yEbkBGed2d7YWG50H-zihuL9I4L1qjXTAF8FhDYbN5tSI9I7YjMxcZqS7mdjb1EQC2SdI8XolhrhCK5mSoTEjnoKBBdqXU6I-1bga6FFjOvkSM4kWAvufavfd5KTwT3saFSPWG_KF83A",
+    "about": "Hola, soy Elena. Me especializo en la enseñanza de idiomas, principalmente Español y Francés. Mi enfoque es comunicativo, lo que significa que hablaremos desde el primer día. ¡Prepárate para aprender de manera inmersiva!",
+    "badges": ["Hablante Nativo", "Top Rated 2023"]
+  },
+  {
+    "id": "marcus",
+    "name": "Mala influencia",
+    "title": " Alcoholisma y Adicciones • 10 Años de Experiencia",
+    "rating": 4.9,
+    "reviewsCount": 76,
+    "price": 50000,
+    "img": " /proyecto_Pagina_Tutorias/src/assets/images/foto_iconica.jpeg",
+     
+    "about": "Soy una mala influencia, pa’ qué te digo que no si sí. Siempre soy la que dice “dale, no pasa na’”, aunque en el fondo sepa que sí va a pasar algo. Me gusta jalar a la gente pa’ la rumba sin importar el día, armar el desorden y convencerte de hacer vainas que después ni tú mismo entiendes cómo terminaste haciendo. Tengo labia, caigo bien y todo es puro vacile… pero si te dejas llevar por mí, terminas metido en el enredo sin darte ni cuenta.",
+    "badges": ["Background Checked"]
+  }
+]

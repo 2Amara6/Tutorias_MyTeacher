@@ -1,0 +1,874 @@
+<!doctype html>
+<html class="light" lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>TutorMaster | Encuentra Tu Tutor Perfecto</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
+    <script src="../js/tailwind.config.js"></script>
+    <link rel="stylesheet" href="../styles/tutor_home.css" />
+  </head>
+
+  <body
+    class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased"
+  >
+    <!-- Toast Notification -->
+    <div
+      id="toast"
+      class="fixed bottom-6 right-6 z-50 bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-5 py-3 rounded-xl shadow-2xl text-sm font-semibold flex items-center gap-2"
+    >
+      <span class="material-symbols-outlined text-primary" id="toast-icon"
+        >check_circle</span
+      >
+      <span id="toast-msg">Acción completada!</span>
+    </div>
+
+    <!-- Modal: Login -->
+    <div
+      id="modal"
+      class="fixed inset-0 z-50 items-center justify-center bg-black/50 backdrop-blur-sm"
+    >
+      <div
+        class="bg-white dark:bg-slate-900 rounded-2xl p-8 w-full max-w-md shadow-2xl border border-slate-200 dark:border-slate-800 mx-4"
+      >
+        <div class="flex items-center justify-between mb-6">
+          <div class="flex items-center gap-2 text-primary">
+            <span class="material-symbols-outlined text-2xl">school</span>
+            <h2 class="text-xl font-bold">TutorMaster</h2>
+          </div>
+          <button
+            onclick="closeModal()"
+            class="text-slate-400 hover:text-slate-700 dark:hover:text-white"
+          >
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+        <h3 class="text-2xl font-bold mb-2">Bienvenido de nuevo</h3>
+        <p class="text-slate-500 text-sm mb-6">
+          Inicia sesión para acceder a tu cuenta
+        </p>
+        <form onsubmit="handleLogin(event)" class="space-y-4">
+          <div>
+            <label
+              class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 block"
+              >Correo electrónico</label
+            >
+            <input
+              type="email"
+              id="login-email"
+              placeholder="tu@correo.com"
+              required
+              class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-transparent text-sm outline-none"
+            />
+          </div>
+          <div>
+            <label
+              class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 block"
+              >Contraseña</label
+            >
+            <input
+              type="password"
+              id="login-password"
+              placeholder="••••••••"
+              required
+              class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-transparent text-sm outline-none"
+            />
+          </div>
+          <button
+            type="submit"
+            class="w-full py-3 bg-primary text-white font-bold rounded-lg hover:bg-primary/90 transition-colors"
+          >
+            Iniciar sesión
+          </button>
+        </form>
+        <p class="text-center text-sm text-slate-500 mt-4">
+          ¿No tienes cuenta?
+          <a
+            href="#"
+            onclick="showToast('Redirigiendo al registro...', 'person_add')"
+            class="text-primary font-semibold hover:underline"
+            >Regístrate gratis</a
+          >
+        </p>
+      </div>
+    </div>
+
+    <!-- Navigation Bar -->
+    <header
+      class="sticky top-0 z-40 w-full border-b border-primary/10 bg-white/80 backdrop-blur-md dark:bg-background-dark/80"
+    >
+      <div
+        class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4"
+      >
+        <div
+          class="flex items-center gap-2 group cursor-pointer"
+          onclick="window.location.href = 'tutor_home.html'"
+        >
+          <div
+            class="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-white shadow-lg shadow-primary/30 group-hover:scale-110 transition-transform"
+          >
+            <span class="material-symbols-outlined text-2xl">school</span>
+          </div>
+          <h2
+            class="text-xl font-bold tracking-tight text-slate-900 dark:text-white"
+          >
+            TutorMaster
+          </h2>
+        </div>
+        <nav class="hidden md:flex items-center gap-8">
+          <a
+            class="text-sm font-medium text-primary border-b-2 border-primary pb-0.5"
+            href="tutor_home.html"
+            >Buscar Tutor</a
+          >
+          <a
+            class="text-sm font-medium hover:text-primary transition-colors"
+            href="#how-it-works"
+            >Cómo funciona</a
+          >
+          <a
+            class="text-sm font-medium hover:text-primary transition-colors"
+            href="#resources"
+            onclick="showToast('¡Recursos próximamente!', 'library_books')"
+            >Recursos</a
+          >
+        </nav>
+        <div class="flex items-center gap-4">
+          <!-- Dark mode toggle -->
+          <button
+            onclick="toggleDarkMode()"
+            class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            title="Cambiar modo oscuro"
+          >
+            <span class="material-symbols-outlined" id="dark-icon"
+              >dark_mode</span
+            >
+          </button>
+          <button
+            onclick="openModal()"
+            class="hidden sm:block text-sm font-semibold text-slate-600 dark:text-slate-400 hover:text-primary transition-colors"
+          >
+            Iniciar Sesión
+          </button>
+          <button
+            onclick="
+              window.location.href = 'tutor_management_availability.html'
+            "
+            class="rounded-lg bg-primary px-5 py-2.5 text-sm font-bold text-white shadow-md shadow-primary/20 hover:bg-primary/90 transition-all"
+          >
+            Ser Tutor
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <!-- Hero Section -->
+      <section
+        class="hero-gradient relative overflow-hidden px-6 py-16 md:py-24"
+      >
+        <div class="mx-auto max-w-7xl text-center">
+          <div
+            class="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-primary mb-6"
+          >
+            <span class="material-symbols-outlined text-sm">verified</span>
+            Más de 1.200 Tutores Expertos Verificados
+          </div>
+          <h1
+            class="mx-auto mb-6 max-w-3xl text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white md:text-6xl"
+          >
+            Encuentra al tutor perfecto para dominar cualquier materia.
+          </h1>
+          <p
+            class="mx-auto mb-10 max-w-2xl text-lg text-slate-600 dark:text-slate-400"
+          >
+            Conéctate con expertos certificados para sesiones en línea o
+            presenciales 1 a 1 adaptadas a tu ritmo y estilo de aprendizaje.
+          </p>
+          <!-- Advanced Search Bar -->
+          <div class="mx-auto w-full max-w-5xl">
+            <div
+              class="rounded-2xl bg-white p-2 shadow-2xl shadow-primary/10 dark:bg-slate-800 flex flex-col md:flex-row items-center gap-2"
+            >
+              <!-- Subject Input -->
+              <div
+                class="flex flex-1 items-center gap-3 px-4 py-3 border-b md:border-b-0 md:border-r border-slate-100 dark:border-slate-700 w-full"
+              >
+                <span class="material-symbols-outlined text-slate-400"
+                  >search</span
+                >
+                <input
+                  id="search-input"
+                  class="w-full border-none bg-transparent p-0 text-slate-900 placeholder:text-slate-400 focus:ring-0 dark:text-white"
+                  placeholder="Materia (ej. Cálculo, Física)"
+                  type="text"
+                />
+              </div>
+              <!-- Level Dropdown -->
+              <div
+                class="flex w-full md:w-48 items-center gap-3 px-4 py-3 border-b md:border-b-0 md:border-r border-slate-100 dark:border-slate-700"
+              >
+                <span class="material-symbols-outlined text-slate-400"
+                  >layers</span
+                >
+                <select
+                  id="level-select"
+                  class="w-full border-none bg-transparent p-0 text-slate-900 focus:ring-0 dark:text-white text-sm"
+                >
+                  <option>Bachillerato</option>
+                  <option>Universidad</option>
+                  <option>Secundaria</option>
+                  <option>Profesional</option>
+                </select>
+              </div>
+              <!-- Mode Dropdown -->
+              <div class="flex w-full md:w-48 items-center gap-3 px-4 py-3">
+                <span class="material-symbols-outlined text-slate-400"
+                  >location_on</span
+                >
+                <select
+                  id="mode-select"
+                  class="w-full border-none bg-transparent p-0 text-slate-900 focus:ring-0 dark:text-white text-sm"
+                >
+                  <option>Virtual</option>
+                  <option>Presencial</option>
+                  <option>Híbrido</option>
+                </select>
+              </div>
+              <button
+                onclick="handleSearch()"
+                class="w-full md:w-auto rounded-xl bg-primary px-8 py-3.5 text-base font-bold text-white hover:bg-primary/90 transition-all flex items-center justify-center gap-2"
+              >
+                <span class="material-symbols-outlined">search</span> Buscar
+              </button>
+            </div>
+          </div>
+          <!-- Trust Badges -->
+          <div class="mt-12 flex flex-wrap justify-center gap-8 text-slate-400">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary">group</span>
+              <span class="text-sm font-medium">+50.000 Estudiantes</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary">star</span>
+              <span class="text-sm font-medium">4,9/5 Valoración Media</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary"
+                >security</span
+              >
+              <span class="text-sm font-medium">Pagos Seguros</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Search Results (hidden initially) -->
+      <section
+        id="search-results"
+        class="hidden px-6 py-12 bg-primary/5 dark:bg-slate-900/50"
+      >
+        <div class="mx-auto max-w-7xl">
+          <div class="flex items-center justify-between mb-6">
+            <h2 id="results-title" class="text-2xl font-bold">
+              Resultados de Búsqueda
+            </h2>
+            <button
+              onclick="closeSearchResults()"
+              class="text-slate-400 hover:text-slate-700 flex items-center gap-1 text-sm font-semibold"
+            >
+              <span class="material-symbols-outlined text-sm">close</span>
+              Limpiar
+            </button>
+          </div>
+          <div
+            id="results-grid"
+            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+          ></div>
+        </div>
+      </section>
+
+      <!-- Top Rated Tutors Section -->
+      <section
+        class="px-6 py-20 bg-white dark:bg-background-dark"
+        id="tutors-section"
+      >
+        <div class="mx-auto max-w-7xl">
+          <div
+            class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6"
+          >
+            <div>
+              <h2
+                class="text-3xl font-bold text-slate-900 dark:text-white mb-2"
+              >
+                Tutores Mejor Valorados
+              </h2>
+              <p class="text-slate-600 dark:text-slate-400">
+                Nuestros tutores más populares y altamente recomendados
+              </p>
+            </div>
+            <button
+              onclick="verTodosTutores()"
+              class="flex items-center gap-2 text-primary font-bold hover:gap-3 transition-all"
+            >
+              Ver Todos los Tutores
+              <span class="material-symbols-outlined">arrow_forward</span>
+            </button>
+          </div>
+          <!-- Tutor Cards Grid -->
+          <div
+            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
+            id="tutor-grid"
+          >
+            <!-- Tutor Card 1 -->
+            <div
+              class="group relative rounded-2xl border border-slate-100 bg-white p-6 transition-all hover:shadow-xl hover:-translate-y-1 dark:border-slate-800 dark:bg-slate-800/50 cursor-pointer"
+              onclick="window.location.href = 'tutor_profile.html?id=sarah'"
+            >
+              <div class="mb-4 flex items-start justify-between">
+                <div class="relative">
+                  <img
+                    alt="Sarah Jenkins"
+                    class="shrink-0 h-16 w-16 rounded-full object-cover ring-2 ring-primary/20"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFM9uJFRzShDrkztGDRdisHG_YsaFa0AOkVbGMa9MymUdBtb472xdhjltkpBZa856il_VfCKh-US3Z6VJhFSlZHh1BxI2YonUrYFgcW-uo_D9unh4SHb7PPGcC2di_VAWzL8-otj35HSFtnTioVdBjA5Jsz9W7iBYUwj7M6qCMkmhIq-pjzy4jevmBNYnCnXfu5La7UMQSXtg8NPtOUun9WjlVBqYZXsHDNvZBQRfgXgPXNdWPrM6gJXD4DWRW-gJHrVp0syIfUFg"
+                  />
+                  <div
+                    class="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-white text-[10px] border-2 border-white dark:border-slate-800"
+                  >
+                    <span class="material-symbols-outlined text-[14px]"
+                      >verified</span
+                    >
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div class="text-lg font-bold text-primary">
+                    $45.000 COP<span class="text-xs font-normal text-slate-500"
+                      >/hr</span
+                    >
+                  </div>
+                  <div class="flex items-center gap-1 text-amber-500">
+                    <span class="material-symbols-outlined text-sm">star</span>
+                    <span class="text-xs font-bold">4.9 (124)</span>
+                  </div>
+                </div>
+              </div>
+              <h3 class="mb-1 text-lg font-bold text-slate-900 dark:text-white">
+                Sarah Jenkins
+              </h3>
+              <p
+                class="mb-4 text-xs font-medium text-slate-500 uppercase tracking-wide"
+              >
+                Matemáticas &amp; Física
+              </p>
+              <div class="mb-6 flex flex-wrap gap-2">
+                <span
+                  class="rounded-full bg-slate-100 px-3 py-1 text-[10px] font-bold text-slate-600 dark:bg-slate-700 dark:text-slate-300"
+                  >CÁLCULO</span
+                >
+                <span
+                  class="rounded-full bg-slate-100 px-3 py-1 text-[10px] font-bold text-slate-600 dark:bg-slate-700 dark:text-slate-300"
+                  >ÁLGEBRA</span
+                >
+              </div>
+              <button
+                onclick="
+                  event.stopPropagation();
+                  window.location.href = 'tutor_profile.html?id=sarah';
+                "
+                class="w-full rounded-lg bg-primary/10 py-2.5 text-sm font-bold text-primary hover:bg-primary hover:text-white transition-all"
+              >
+                Ver Perfil
+              </button>
+            </div>
+            <!-- Tutor Card 2 -->
+            <div
+              class="group relative rounded-2xl border border-slate-100 bg-white p-6 transition-all hover:shadow-xl hover:-translate-y-1 dark:border-slate-800 dark:bg-slate-800/50 cursor-pointer"
+              onclick="window.location.href = 'tutor_profile.html?id=david'"
+            >
+              <div class="mb-4 flex items-start justify-between">
+                <div class="relative">
+                  <img
+                    alt=""
+                    class="shrink-0 h-16 w-16 rounded-full object-cover ring-2 ring-primary/20"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCttohCMfgWsIZ0MfHZLkFqjElOISFWncW0S2kZuU4LlfLi07yNLTMtrVC44I89LV1KcBlu-kvj_3aqjp5SEx_iGO9OJ3rODk4vpsYuZNQEUCsozkcfjV7Zu_GIw3VprEck8mavbsPMsVKJPwqc5Zm9VpnkReEMRHSrzR33TgIJJADneg6jK8LSOZ3G2M09d3hqd7WRoYPgtoVEx1-ZP0tL6jsdkwsFG7YS3_X6QaBdEeWhBT_1qNYp8gF4_q__G4BxmmMT1_LvTug"
+                  />
+                  <div
+                    class="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-white text-[10px] border-2 border-white dark:border-slate-800"
+                  >
+                    <span class="material-symbols-outlined text-[14px]"
+                      >verified</span
+                    >
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div class="text-lg font-bold text-primary">
+                    $60.000 COP<span class="text-xs font-normal text-slate-500"
+                      >/hr</span
+                    >
+                  </div>
+                  <div class="flex items-center gap-1 text-amber-500">
+                    <span class="material-symbols-outlined text-sm">star</span>
+                    <span class="text-xs font-bold">5.0 (89)</span>
+                  </div>
+                </div>
+              </div>
+              <h3 class="mb-1 text-lg font-bold text-slate-900 dark:text-white">
+                David Chen
+              </h3>
+              <p
+                class="mb-4 text-xs font-medium text-slate-500 uppercase tracking-wide"
+              >
+                Informática
+              </p>
+              <div class="mb-6 flex flex-wrap gap-2">
+                <span
+                  class="rounded-full bg-slate-100 px-3 py-1 text-[10px] font-bold text-slate-600 dark:bg-slate-700 dark:text-slate-300"
+                  >PYTHON</span
+                >
+                <span
+                  class="rounded-full bg-slate-100 px-3 py-1 text-[10px] font-bold text-slate-600 dark:bg-slate-700 dark:text-slate-300"
+                  >ESTRUCTURAS DE DATOS</span
+                >
+              </div>
+              <button
+                onclick="
+                  event.stopPropagation();
+                  window.location.href = 'tutor_profile.html?id=david';
+                "
+                class="w-full rounded-lg bg-primary/10 py-2.5 text-sm font-bold text-primary hover:bg-primary hover:text-white transition-all"
+              >
+                Ver Perfil
+              </button>
+            </div>
+            <!-- Tutor Card 3 -->
+            <div
+              class="group relative rounded-2xl border border-slate-100 bg-white p-6 transition-all hover:shadow-xl hover:-translate-y-1 dark:border-slate-800 dark:bg-slate-800/50 cursor-pointer"
+              onclick="window.location.href = 'tutor_profile.html?id=elena'"
+            >
+              <div class="mb-4 flex items-start justify-between">
+                <div class="relative">
+                  <img
+                    alt=""
+                    class="shrink-0 h-16 w-16 rounded-full object-cover ring-2 ring-primary/20"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuB_QpX42UzxMpr9ZVEkek1mLf6pZzXMGtav81ftYAdMXR63lxTu5ICgSt_OxCnJwaoynm5aQbaHRAVJ_FUGJOU04SbKdnwvCwMeNBuYn07e-TMdI31ABiFssJBVgGcEd35yEbkBGed2d7YWG50H-zihuL9I4L1qjXTAF8FhDYbN5tSI9I7YjMxcZqS7mdjb1EQC2SdI8XolhrhCK5mSoTEjnoKBBdqXU6I-1bga6FFjOvkSM4kWAvufavfd5KTwT3saFSPWG_KF83A"
+                  />
+                  <div
+                    class="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-white text-[10px] border-2 border-white dark:border-slate-800"
+                  >
+                    <span class="material-symbols-outlined text-[14px]"
+                      >verified</span
+                    >
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div class="text-lg font-bold text-primary">
+                    $35.000 COP<span class="text-xs font-normal text-slate-500"
+                      >/hr</span
+                    >
+                  </div>
+                  <div class="flex items-center gap-1 text-amber-500">
+                    <span class="material-symbols-outlined text-sm">star</span>
+                    <span class="text-xs font-bold">4.8 (210)</span>
+                  </div>
+                </div>
+              </div>
+              <h3 class="mb-1 text-lg font-bold text-slate-900 dark:text-white">
+                Elias Rodriguez
+              </h3>
+              <p
+                class="mb-4 text-xs font-medium text-slate-500 uppercase tracking-wide"
+              >
+                Idiomas
+              </p>
+              <div class="mb-6 flex flex-wrap gap-2">
+                <span
+                  class="rounded-full bg-slate-100 px-3 py-1 text-[10px] font-bold text-slate-600 dark:bg-slate-700 dark:text-slate-300"
+                  >ESPAÑOL</span
+                >
+                <span
+                  class="rounded-full bg-slate-100 px-3 py-1 text-[10px] font-bold text-slate-600 dark:bg-slate-700 dark:text-slate-300"
+                  >FRANCÉS</span
+                >
+              </div>
+              <button
+                onclick="
+                  event.stopPropagation();
+                  window.location.href = 'tutor_profile.html?id=elena';
+                "
+                class="w-full rounded-lg bg-primary/10 py-2.5 text-sm font-bold text-primary hover:bg-primary hover:text-white transition-all"
+              >
+                Ver Perfil
+              </button>
+            </div>
+            <!-- Tutor Card 4 -->
+            <div
+              class="group relative rounded-2xl border border-slate-100 bg-white p-6 transition-all hover:shadow-xl hover:-translate-y-1 dark:border-slate-800 dark:bg-slate-800/50 cursor-pointer"
+              onclick="window.location.href = 'tutor_profile.html?id=marcus'"
+            >
+              <div class="mb-4 flex items-start justify-between">
+                <div class="relative">
+                  <img
+                    alt=""
+                    class="shrink-0 h-16 w-16 rounded-full object-cover ring-2 ring-primary/20"
+                    src="../assets/images/foto_iconica.jpeg"
+                  />
+                  <div
+                    class="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-white text-[10px] border-2 border-white dark:border-slate-800"
+                  >
+                    <span class="material-symbols-outlined text-[14px]"
+                      >verified</span
+                    >
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div class="text-lg font-bold text-primary">
+                    $50.000 COP<span class="text-xs font-normal text-slate-500"
+                      >/hr</span
+                    >
+                  </div>
+                  <div class="flex items-center gap-1 text-amber-500">
+                    <span class="material-symbols-outlined text-sm">star</span>
+                    <span class="text-xs font-bold">4.9 (76)</span>
+                  </div>
+                </div>
+              </div>
+              <h3 class="mb-1 text-lg font-bold text-slate-900 dark:text-white">
+                Mala Influencia
+              </h3>
+              <p
+                class="mb-4 text-xs font-medium text-slate-500 uppercase tracking-wide"
+              >
+                Alcoholisma y Adicciones
+              </p>
+              <div class="mb-6 flex flex-wrap gap-2">
+                <span
+                  class="rounded-full bg-slate-100 px-3 py-1 text-[10px] font-bold text-slate-600 dark:bg-slate-700 dark:text-slate-300"
+                  >Que paso Ayer!!</span
+                >
+                <span
+                  class="rounded-full bg-slate-100 px-3 py-1 text-[10px] font-bold text-slate-600 dark:bg-slate-700 dark:text-slate-300"
+                  >Full Party</span
+                >
+              </div>
+              <button
+                onclick="
+                  event.stopPropagation();
+                  window.location.href = 'tutor_profile.html?id=marcus';
+                "
+                class="w-full rounded-lg bg-primary/10 py-2.5 text-sm font-bold text-primary hover:bg-primary hover:text-white transition-all"
+              >
+                Ver Perfil
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- How it Works -->
+      <section
+        id="how-it-works"
+        class="px-6 py-20 bg-slate-50 dark:bg-slate-900/50"
+      >
+        <div class="mx-auto max-w-7xl text-center">
+          <h2 class="text-3xl font-bold mb-12">Cómo Funciona TutorMaster</h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div
+              class="p-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-lg transition-all"
+            >
+              <div
+                class="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4"
+              >
+                <span class="material-symbols-outlined text-primary text-3xl"
+                  >search</span
+                >
+              </div>
+              <h3 class="text-xl font-bold mb-2">1. Busca</h3>
+              <p class="text-slate-500 text-sm">
+                Busca entre cientos de tutores verificados filtrados por
+                materia, nivel, precio y disponibilidad.
+              </p>
+            </div>
+            <div
+              class="p-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-lg transition-all"
+            >
+              <div
+                class="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4"
+              >
+                <span class="material-symbols-outlined text-primary text-3xl"
+                  >calendar_month</span
+                >
+              </div>
+              <h3 class="text-xl font-bold mb-2">2. Reserva</h3>
+              <p class="text-slate-500 text-sm">
+                Elige tu horario preferido y tipo de sesión. Paga de forma
+                segura después de tu sesión.
+              </p>
+            </div>
+            <div
+              class="p-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-lg transition-all"
+            >
+              <div
+                class="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4"
+              >
+                <span class="material-symbols-outlined text-primary text-3xl"
+                  >trending_up</span
+                >
+              </div>
+              <h3 class="text-xl font-bold mb-2">3. Aprende y Avanza</h3>
+              <p class="text-slate-500 text-sm">
+                Asiste a clases en vivo, sigue tu progreso y alcanza tus metas
+                académicas.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Become a Tutor CTA Section -->
+      <section class="mx-auto max-w-7xl px-6 py-20">
+        <div
+          class="relative overflow-hidden rounded-[2.5rem] bg-primary px-8 py-16 text-center text-white md:px-16 md:py-24 shadow-2xl shadow-primary/40"
+        >
+          <div class="absolute inset-0 opacity-10 pointer-events-none">
+            <svg
+              height="100%"
+              viewBox="0 0 800 400"
+              width="100%"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle cx="0" cy="0" fill="white" r="400"></circle>
+              <circle cx="800" cy="400" fill="white" r="300"></circle>
+            </svg>
+          </div>
+          <div class="relative z-10">
+            <h2 class="mb-6 text-3xl font-extrabold md:text-5xl">
+              Comparte tu conocimiento. Gana a tu manera.
+            </h2>
+            <p
+              class="mx-auto mb-10 max-w-2xl text-lg text-white/80 font-light leading-relaxed"
+            >
+              Únete a nuestra comunidad de educadores destacados. Establece tus
+              propios horarios, define tus tarifas y ayuda a los estudiantes a
+              alcanzar su máximo potencial desde cualquier parte del mundo.
+            </p>
+            <div class="flex flex-wrap justify-center gap-4">
+              <button
+                onclick="
+                  window.location.href = 'tutor_management_availability.html'
+                "
+                class="rounded-xl bg-white px-8 py-4 text-lg font-bold text-primary shadow-xl hover:bg-slate-50 transition-all"
+              >
+                Empieza a Dar Clases Hoy
+              </button>
+              <button
+                onclick="
+                  document
+                    .getElementById('how-it-works')
+                    .scrollIntoView({ behavior: 'smooth' })
+                "
+                class="rounded-xl border-2 border-white/30 px-8 py-4 text-lg font-bold text-white hover:bg-white/10 transition-all backdrop-blur-sm"
+              >
+                Ver Cómo Funciona
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer
+      class="border-t border-slate-100 bg-white py-16 dark:border-slate-800 dark:bg-background-dark"
+    >
+      <div class="mx-auto max-w-7xl px-6">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+          <div class="col-span-1 md:col-span-1">
+            <div class="flex items-center gap-2 mb-6">
+              <div
+                class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-white"
+              >
+                <span class="material-symbols-outlined text-lg">school</span>
+              </div>
+              <h2
+                class="text-lg font-bold tracking-tight text-slate-900 dark:text-white"
+              >
+                TutorMaster
+              </h2>
+            </div>
+            <p class="text-sm text-slate-500 leading-relaxed">
+              La plataforma líder mundial en tutorías personalizadas de alta
+              calidad. Cerrando la brecha entre la curiosidad y el dominio.
+            </p>
+          </div>
+          <div>
+            <h4
+              class="mb-6 text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white"
+            >
+              Plataforma
+            </h4>
+            <ul class="space-y-4 text-sm text-slate-500">
+              <li>
+                <a
+                  class="hover:text-primary transition-colors cursor-pointer"
+                  onclick="
+                    document
+                      .getElementById('tutors-section')
+                      .scrollIntoView({ behavior: 'smooth' })
+                  "
+                  >Encontrar Tutor</a
+                >
+              </li>
+              <li>
+                <a
+                  class="hover:text-primary transition-colors cursor-pointer"
+                  onclick="
+                    window.location.href = 'tutor_management_availability.html'
+                  "
+                  >Ser Tutor</a
+                >
+              </li>
+              <li>
+                <a
+                  class="hover:text-primary transition-colors cursor-pointer"
+                  onclick="
+                    document
+                      .getElementById('how-it-works')
+                      .scrollIntoView({ behavior: 'smooth' })
+                  "
+                  >Cómo Funciona</a
+                >
+              </li>
+              <li>
+                <a
+                  class="hover:text-primary transition-colors cursor-pointer"
+                  onclick="
+                    showToast('¡Página de precios próximamente!', 'payments')
+                  "
+                  >Precios</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h4
+              class="mb-6 text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white"
+            >
+              Soporte
+            </h4>
+            <ul class="space-y-4 text-sm text-slate-500">
+              <li>
+                <a
+                  class="hover:text-primary transition-colors cursor-pointer"
+                  onclick="showToast('¡Centro de ayuda abierto!', 'help')"
+                  >Centro de Ayuda</a
+                >
+              </li>
+              <li>
+                <a
+                  class="hover:text-primary transition-colors cursor-pointer"
+                  onclick="
+                    showToast('¡Guía de seguridad abierta!', 'verified_user')
+                  "
+                  >Guía de Seguridad</a
+                >
+              </li>
+              <li>
+                <a
+                  class="hover:text-primary transition-colors cursor-pointer"
+                  onclick="
+                    showToast('¡Formulario de contacto abierto!', 'mail')
+                  "
+                  >Contáctanos</a
+                >
+              </li>
+              <li>
+                <a
+                  class="hover:text-primary transition-colors cursor-pointer"
+                  onclick="
+                    showToast(
+                      '¡Garantía de calidad: 100% satisfacción!',
+                      'workspace_premium',
+                    )
+                  "
+                  >Garantía de Calidad</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h4
+              class="mb-6 text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white"
+            >
+              Legal
+            </h4>
+            <ul class="space-y-4 text-sm text-slate-500">
+              <li>
+                <a
+                  class="hover:text-primary transition-colors cursor-pointer"
+                  onclick="
+                    showToast('¡Política de privacidad abierta!', 'privacy_tip')
+                  "
+                  >Política de Privacidad</a
+                >
+              </li>
+              <li>
+                <a
+                  class="hover:text-primary transition-colors cursor-pointer"
+                  onclick="
+                    showToast('¡Términos de servicio abiertos!', 'gavel')
+                  "
+                  >Términos de Servicio</a
+                >
+              </li>
+              <li>
+                <a
+                  class="hover:text-primary transition-colors cursor-pointer"
+                  onclick="showToast('¡Política de cookies abierta!', 'cookie')"
+                  >Política de Cookies</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div
+          class="flex flex-col md:flex-row items-center justify-between gap-6 pt-8 border-t border-slate-100 dark:border-slate-800"
+        >
+          <p class="text-xs text-slate-400">
+            © 2024 TutorMaster Inc. Todos los derechos reservados.
+          </p>
+          <div class="flex gap-6">
+            <a
+              onclick="showToast('Abriendo sitio web...', 'public')"
+              class="text-slate-400 hover:text-primary transition-colors cursor-pointer"
+              ><span class="material-symbols-outlined">public</span></a
+            >
+            <a
+              onclick="showToast('Abriendo correo...', 'mail')"
+              class="text-slate-400 hover:text-primary transition-colors cursor-pointer"
+              ><span class="material-symbols-outlined">alternate_email</span></a
+            >
+            <a
+              onclick="showToast('Abriendo foro...', 'forum')"
+              class="text-slate-400 hover:text-primary transition-colors cursor-pointer"
+              ><span class="material-symbols-outlined">forum</span></a
+            >
+          </div>
+        </div>
+      </div>
+    </footer>
+    <script src="../js/utils.js"></script>
+    <script src="../js/tutor_home.js"></script>
+  </body>
+</html>

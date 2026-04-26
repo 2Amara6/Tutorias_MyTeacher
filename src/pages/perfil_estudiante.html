@@ -1,0 +1,686 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Panel del Estudiante - TutorMaster</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../styles/perfil_estudiante.css" />
+    <script src="../js/utils.js"></script>
+    <script src="../js/perfil_estudiante.js"></script>
+    <script src="../js/tailwind.config.js"></script>
+  </head>
+
+  <body
+    class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display"
+  >
+    <!-- Toast -->
+    <div
+      id="toast"
+      class="fixed bottom-6 right-6 z-50 bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-5 py-3 rounded-xl shadow-2xl text-sm font-semibold flex items-center gap-2"
+    >
+      <span class="material-symbols-outlined text-primary" id="toast-icon"
+        >check_circle</span
+      >
+      <span id="toast-msg">Done!</span>
+    </div>
+
+    <!-- Settings Modal -->
+    <div
+      id="settings-modal"
+      class="fixed inset-0 z-50 items-center justify-center bg-black/50 backdrop-blur-sm"
+    >
+      <div
+        class="bg-white dark:bg-slate-900 rounded-2xl p-8 w-full max-w-md shadow-2xl border border-slate-200 dark:border-slate-800 mx-4"
+      >
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="text-lg font-bold">Configuración de Cuenta</h3>
+          <button
+            onclick="closeSettings()"
+            class="text-slate-400 hover:text-slate-700"
+          >
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+        <div class="space-y-4">
+          <div>
+            <label
+              class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 block"
+              >Full Name</label
+            >
+            <input
+              type="text"
+              value="Andrea"
+              class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm focus:ring-2 focus:ring-primary outline-none"
+            />
+          </div>
+          <div>
+            <label
+              class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 block"
+              >Email</label
+            >
+            <input
+              type="email"
+              value="andres@TutorMaster.com"
+              class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm focus:ring-2 focus:ring-primary outline-none"
+            />
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-sm font-medium">Modo Oscuro</span>
+            <button
+              onclick="toggleDarkMode()"
+              class="relative w-12 h-6 rounded-full bg-primary transition-colors"
+              id="dark-toggle"
+            >
+              <span
+                class="absolute right-1 top-1 w-4 h-4 bg-white rounded-full transition-transform"
+                id="dark-knob"
+              ></span>
+            </button>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-sm font-medium">Notificaciones por Correo</span>
+            <button
+              onclick="toggleNotifPref(this)"
+              class="relative w-12 h-6 rounded-full bg-primary transition-colors"
+            >
+              <span
+                class="absolute right-1 top-1 w-4 h-4 bg-white rounded-full transition-transform"
+              ></span>
+            </button>
+          </div>
+        </div>
+        <button
+          onclick="saveSettings()"
+          class="w-full mt-6 py-3 bg-primary text-white font-bold rounded-xl hover:bg-primary/90"
+        >
+          Save Changes
+        </button>
+      </div>
+    </div>
+
+    <!-- Reschedule Modal -->
+    <div
+      id="reschedule-modal"
+      class="fixed inset-0 z-50 items-center justify-center bg-black/50 backdrop-blur-sm"
+    >
+      <div
+        class="bg-white dark:bg-slate-900 rounded-2xl p-8 w-full max-w-md shadow-2xl border border-slate-200 dark:border-slate-800 mx-4"
+      >
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="text-lg font-bold">Reprogramar Sesión</h3>
+          <button
+            onclick="closeReschedule()"
+            class="text-slate-400 hover:text-slate-700"
+          >
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+        <div class="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 mb-4 text-sm">
+          <p class="font-semibold mb-1">Cálculo II con Sarah Jenkins</p>
+          <p class="text-slate-500">Current: Hoy, 4:00 PM - 5:00 PM</p>
+        </div>
+        <div class="space-y-3">
+          <div>
+            <label class="text-xs font-bold text-slate-500 uppercase mb-1 block"
+              >Nueva Fecha</label
+            >
+            <input
+              type="date"
+              id="reschedule-date"
+              class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm focus:ring-2 focus:ring-primary outline-none"
+            />
+          </div>
+          <div>
+            <label class="text-xs font-bold text-slate-500 uppercase mb-1 block"
+              >Nueva Hora</label
+            >
+            <select
+              id="reschedule-time"
+              class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm focus:ring-2 focus:ring-primary outline-none"
+            >
+              <option>09:00 AM</option>
+              <option>10:30 AM</option>
+              <option>12:00 PM</option>
+              <option>02:00 PM</option>
+              <option>04:30 PM</option>
+              <option>06:00 PM</option>
+            </select>
+          </div>
+        </div>
+        <div class="flex gap-3 mt-6">
+          <button
+            onclick="closeReschedule()"
+            class="flex-1 py-3 border border-slate-200 dark:border-slate-700 rounded-xl font-bold text-sm"
+          >
+            Cancelar
+          </button>
+          <button
+            onclick="confirmReschedule()"
+            class="flex-1 py-3 bg-primary text-white rounded-xl font-bold text-sm"
+          >
+            Reprogramar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex h-screen overflow-hidden">
+      <!-- Sidebar Navigation -->
+      <aside
+        class="w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col"
+      >
+        <div
+          class="p-6 flex items-center gap-3 cursor-pointer"
+          onclick="window.location.href = 'tutor_home.html'"
+        >
+          <div
+            class="size-8 bg-primary rounded-lg flex items-center justify-center text-white"
+          >
+            <span class="material-symbols-outlined">school</span>
+          </div>
+          <h1 class="text-xl font-bold tracking-tight">TutorMaster</h1>
+        </div>
+        <nav class="flex-1 px-4 space-y-2 mt-4">
+          <a
+            id="nav-dashboard"
+            onclick="navigate('dashboard')"
+            class="flex items-center gap-3 px-3 py-2.5 rounded-lg sidebar-item-active transition-colors cursor-pointer"
+          >
+            <span class="material-symbols-outlined">Panel</span>
+          </a>
+          <a
+            id="nav-find"
+            onclick="focusSearch()"
+            class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-600 dark:text-slate-400 cursor-pointer"
+          >
+            <span class="material-symbols-outlined">search</span>
+            <span class="font-medium text-sm">Buscar Tutor</span>
+          </a>
+          <a
+            id="nav-lessons"
+            href="calendario_estudiante.html"
+            class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-600 dark:text-slate-400 cursor-pointer"
+          >
+            <span class="material-symbols-outlined">book_4</span>
+            <span class="font-medium text-sm">Mis Clases</span>
+          </a>
+          <a
+            id="nav-messages"
+            href="mensajes.html"
+            class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-600 dark:text-slate-400 cursor-pointer relative"
+          >
+            <span class="material-symbols-outlined">chat_bubble</span>
+            <span class="font-medium text-sm">Mensajes</span>
+            <span
+              id="msg-badge"
+              class="absolute right-3 top-1/2 -translate-y-1/2 size-2 bg-red-500 rounded-full"
+            ></span>
+          </a>
+        </nav>
+        <div
+          class="p-4 mt-auto border-t border-slate-200 dark:border-slate-800"
+        >
+          <div
+            class="flex items-center gap-3 px-2 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/50"
+          >
+            <img
+              class="size-10 rounded-full object-cover"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuCOuL9-gRq52A4OF97gLRj0mvkpdqYreSBcchqUEoF9psG1U1WtKLM31erU_nxNV0Rr1vhrs0CJQAJfJJDEUFVLviAc_pZ08msQIJqFnWzaldt74QFcwJRq1-da7oz326GpG3qoKOZ4RZ3GpQa8Xx7ovWovBDw4lae-Ft3P_aR9b4TyFekoQ37rJOceI8bKeVna1Ac8pSOsrAPvCj7_mj29bXnn5si6WnvKufnGTFmG1B1edO-dmzyFyx9iUYYTXiElBKLmOS9bC30"
+            />
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-semibold truncate">Andrea</p>
+              <p class="text-xs text-slate-500 truncate">Estudiante Premium</p>
+            </div>
+            <span
+              class="material-symbols-outlined text-slate-400 cursor-pointer hover:text-primary transition-colors"
+              onclick="openSettings()"
+              >settings</span
+            >
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Content Area -->
+      <main class="flex-1 flex flex-col overflow-hidden">
+        <!-- Top Navigation -->
+        <header
+          class="h-16 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-8 flex items-center justify-between"
+        >
+          <div class="flex-1 max-w-xl">
+            <div class="relative">
+              <span
+                class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                >search</span
+              >
+              <input
+                id="main-search"
+                oninput="handleMainSearch(event)"
+                class="w-full pl-10 pr-4 py-2 bg-slate-100 dark:bg-slate-800 border-none rounded-lg focus:ring-2 focus:ring-primary text-sm"
+                placeholder="Buscar tutores o materias..."
+                type="text"
+              />
+            </div>
+          </div>
+          <div class="flex items-center gap-4">
+            <!-- Dark Mode -->
+            <button
+              onclick="toggleDarkMode()"
+              class="size-10 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400"
+            >
+              <span class="material-symbols-outlined" id="dark-icon"
+                >dark_mode</span
+              >
+            </button>
+            <!-- Notifications -->
+            <div class="relative">
+              <div
+                class="flex items-center gap-2 text-slate-600 font-semibold cursor-pointer"
+                onclick="toggleNotifications()"
+              >
+                <div class="relative">
+                  <svg
+                    class="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewbox="0 0 24 24"
+                  >
+                    <path
+                      d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                    ></path>
+                  </svg>
+                </div>
+                <span class="text-xs uppercase tracking-wider"
+                  >Notificaciones</span
+                >
+              </div>
+              <!-- Notification Panel -->
+              <div
+                id="notif-panel"
+                class="absolute right-0 top-12 w-80 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 z-50 overflow-hidden"
+              >
+                <div
+                  class="flex items-center justify-between p-4 border-b border-slate-100 dark:border-slate-800"
+                >
+                  <h3 class="font-bold text-sm">Notificaciones</h3>
+                  <button
+                    onclick="markAllRead()"
+                    class="text-xs text-primary font-semibold hover:underline"
+                  >
+                    Marcar todo como leído
+                  </button>
+                </div>
+                <div
+                  class="divide-y divide-slate-100 dark:divide-slate-800 max-h-72 overflow-y-auto"
+                  id="notif-list"
+                >
+                  <div
+                    class="p-4 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer flex gap-3 items-start"
+                  >
+                    <span
+                      class="material-symbols-outlined text-primary mt-0.5 text-lg"
+                      >calendar_today</span
+                    >
+                    <div>
+                      <p class="text-xs font-semibold">
+                        Recordatorio de sesión
+                      </p>
+                      <p class="text-xs text-slate-500">
+                        Cálculo II con Sarah Jenkins – Today 4:00 PM
+                      </p>
+                    </div>
+                  </div>
+                  <div
+                    class="p-4 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer flex gap-3 items-start"
+                  >
+                    <span
+                      class="material-symbols-outlined text-green-500 mt-0.5 text-lg"
+                      >check_circle</span
+                    >
+                    <div>
+                      <p class="text-xs font-semibold">Pago confirmado</p>
+                      <p class="text-xs text-slate-500">
+                        $79.500 COP por sesión de Física I
+                      </p>
+                    </div>
+                  </div>
+                  <div
+                    class="p-4 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer flex gap-3 items-start"
+                  >
+                    <span
+                      class="material-symbols-outlined text-amber-500 mt-0.5 text-lg"
+                      >auto_awesome</span
+                    >
+                    <div>
+                      <p class="text-xs font-semibold">
+                        ¡Nueva coincidencia de tutor!
+                      </p>
+                      <p class="text-xs text-slate-500">
+                        Elena R. está disponible para Química Orgánica
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="h-8 w-[1px] bg-slate-200 dark:bg-slate-800 mx-2"></div>
+            <button
+              onclick="window.location.href = 'tutor_home.html'"
+              class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-primary/90 transition-colors"
+            >
+              Book a Session
+            </button>
+          </div>
+        </header>
+
+        <!-- Scrollable Dashboard Content -->
+        <div class="flex-1 overflow-y-auto p-8 space-y-8" id="main-content">
+          <!-- Welcome Header -->
+          <div class="flex flex-col gap-1">
+            <h2 class="text-3xl font-bold tracking-tight" id="greeting">
+              Good morning, Andrea! 👋
+            </h2>
+            <p class="text-slate-500">
+              Tienes
+              <span class="text-primary font-semibold">2 sesiones</span>
+              programadas para hoy.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Upcoming Sessions Column -->
+            <div class="lg:col-span-2 space-y-6">
+              <div class="flex items-center justify-between">
+                <h3 class="text-lg font-bold">Próximas Sesiones</h3>
+                <a
+                  onclick="
+                    showToast(
+                      'Abriendo vista de calendario...',
+                      'calendar_month',
+                    )
+                  "
+                  class="text-sm font-semibold text-primary hover:underline cursor-pointer"
+                  >Ver mi calendario</a
+                >
+              </div>
+
+              <!-- Virtual Session Card -->
+              <div
+                class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col md:flex-row gap-6 relative overflow-hidden"
+              >
+                <div class="absolute top-0 left-0 w-1 h-full bg-primary"></div>
+                <div class="flex-1 space-y-4">
+                  <div class="flex items-start justify-between">
+                    <div class="flex items-center gap-4">
+                      <img
+                        class="size-14 rounded-lg object-cover"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFM9uJFRzShDrkztGDRdisHG_YsaFa0AOkVbGMa9MymUdBtb472xdhjltkpBZa856il_VfCKh-US3Z6VJhFSlZHh1BxI2YonUrYFgcW-uo_D9unh4SHb7PPGcC2di_VAWzL8-otj35HSFtnTioVdBjA5Jsz9W7iBYUwj7M6qCMkmhIq-pjzy4jevmBNYnCnXfu5La7UMQSXtg8NPtOUun9WjlVBqYZXsHDNvZBQRfgXgPXNdWPrM6gJXD4DWRW-gJHrVp0syIfUFg"
+                      />
+                      <div>
+                        <p
+                          class="text-xs font-bold text-primary uppercase tracking-wider mb-0.5"
+                        >
+                          Cálculo II
+                        </p>
+                        <h4 class="text-lg font-bold">Sarah Jenkins</h4>
+                        <div
+                          class="flex items-center gap-2 text-slate-500 text-sm"
+                        >
+                          <span class="material-symbols-outlined text-[18px]"
+                            >calendar_today</span
+                          >
+                          <span>Hoy, 4:00 PM - 5:00 PM</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="px-3 py-1 bg-blue-50 dark:bg-blue-900/30 text-primary text-xs font-bold rounded-full flex items-center gap-1"
+                    >
+                      <span class="material-symbols-outlined text-[14px]"
+                        >videocam</span
+                      >
+                      Virtual
+                    </div>
+                  </div>
+                  <div class="flex gap-3">
+                    <button
+                      onclick="
+                        window.open('https://meet.google.com/landing', '_blank')
+                      "
+                      class="flex-1 md:flex-none bg-primary text-white px-6 py-2 rounded-lg text-sm font-bold flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors"
+                    >
+                      <span class="material-symbols-outlined text-[20px]"
+                        >video_call</span
+                      >
+                      Join Call
+                    </button>
+                    <button
+                      onclick="openReschedule()"
+                      class="flex-1 md:flex-none px-6 py-2 border border-slate-200 dark:border-slate-800 rounded-lg text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                    >
+                      Reschedule
+                    </button>
+                  </div>
+                </div>
+                <div
+                  class="hidden md:block w-48 bg-slate-100 dark:bg-slate-800 rounded-lg overflow-hidden"
+                >
+                  <img
+                    class="w-full h-full object-cover rounded-lg opacity-80"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuA4efhbqrrmU7jP_xeqsViEJZmMga3dlddLXVi7XeAjq_PQHTfp3rKuYb1VUl4Uvm5cWePcefb6PvlfeLqMWupDF0F9CKY09TvTphpqfZX71CrN80HnkYuVOSqXgN5buWhdzjGdJ4BlCLJVbkhYgRMtSilcdjU-3uFsxVw_61-TTSBr8shVs8vkNzaEN2DLEgVSpI6LqGrKXNxBkSijU7mvsoMZWadxM7-YvrPFerJKjNGaIa-LqnzizFHmZC0-sZWr6n0PgfMRQ6g"
+                  />
+                </div>
+              </div>
+
+              <!-- In-Person Session Card -->
+              <div
+                class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col md:flex-row gap-6"
+              >
+                <div class="flex-1 space-y-4">
+                  <div class="flex items-start justify-between">
+                    <div class="flex items-center gap-4">
+                      <img
+                        class="size-14 rounded-lg object-cover"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuCttohCMfgWsIZ0MfHZLkFqjElOISFWncW0S2kZuU4LlfLi07yNLTMtrVC44I89LV1KcBlu-kvj_3aqjp5SEx_iGO9OJ3rODk4vpsYuZNQEUCsozkcfjV7Zu_GIw3VprEck8mavbsPMsVKJPwqc5Zm9VpnkReEMRHSrzR33TgIJJADneg6jK8LSOZ3G2M09d3hqd7WRoYPgtoVEx1-ZP0tL6jsdkwsFG7YS3_X6QaBdEeWhBT_1qNYp8gF4_q__G4BxmmMT1_LvTug"
+                      />
+                      <div>
+                        <p
+                          class="text-xs font-bold text-orange-500 uppercase tracking-wider mb-0.5"
+                        >
+                          Física I
+                        </p>
+                        <h4 class="text-lg font-bold">Dr. David Chen</h4>
+                        <div
+                          class="flex items-center gap-2 text-slate-500 text-sm"
+                        >
+                          <span class="material-symbols-outlined text-[18px]"
+                            >calendar_today</span
+                          >
+                          <span>Mañana, 2:30 PM - 4:00 PM</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="px-3 py-1 bg-orange-50 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 text-xs font-bold rounded-full flex items-center gap-1"
+                    >
+                      <span class="material-symbols-outlined text-[14px]"
+                        >location_on</span
+                      >
+                      Campus Hub
+                    </div>
+                  </div>
+                  <div class="flex gap-3">
+                    <button
+                      onclick="window.location.href = 'maps.html'"
+                      class="flex-1 md:flex-none bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 px-6 py-2 rounded-lg text-sm font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
+                    >
+                      <span class="material-symbols-outlined text-[20px]"
+                        >directions</span
+                      >
+                      View Directions
+                    </button>
+                    <button
+                      onclick="window.location.href = 'mensajes.html'"
+                      class="flex-1 md:flex-none px-6 py-2 border border-slate-200 dark:border-slate-800 rounded-lg text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                    >
+                      Message
+                    </button>
+                  </div>
+                </div>
+                <div
+                  class="hidden md:block w-48 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-800"
+                >
+                  <img
+                    class="w-full h-full object-cover"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCcTIu8Km5Xu4x7tALlGW6LvPoCVGMkwM2R_YIeE_QEqJ339VbRwOGfMHIwJXntEi_gwKK9OJCFrTq08yssf1Dfx4hERVkMLn4ZrP-gnNKMMjDqEE8scFRwuYtnFPhp44haTIro-QZarY4rK6kkJlS2_cXmYuu_mWI3J-LQtDgeMTY6y6AclC2cCpag5cTIAJRJ1KIWKA7gHWJTS6xqoOPdBAtbkrOaIuSqlL7UZOneq0T2bg3bEvyoFWzmz4TMMRB4OpHd0FG0XhQ"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Sidebar Widgets -->
+            <div class="space-y-8">
+              <!-- Smart Matches -->
+              <div
+                class="bg-primary/10 dark:bg-primary/20 border border-primary/20 p-6 rounded-2xl relative"
+              >
+                <div
+                  class="absolute -top-3 -right-3 size-12 bg-primary rounded-full flex items-center justify-center text-white shadow-lg"
+                >
+                  <span class="material-symbols-outlined">auto_awesome</span>
+                </div>
+                <h3 class="text-lg font-bold mb-1">
+                  Coincidencias Inteligentes
+                </h3>
+                <p
+                  class="text-sm text-slate-600 dark:text-slate-400 mb-6 italic"
+                >
+                  Basado en tu reciente busqueda de "Química Orgánica"
+                </p>
+                <div id="smart-matches" class="space-y-4">
+                  <div
+                    class="flex items-center gap-3 group cursor-pointer hover:scale-105 transition-transform"
+                    onclick="
+                      window.location.href = 'tutor_profile.html?id=elena'
+                    "
+                  >
+                    <img
+                      class="size-12 rounded-full ring-2 ring-primary/20 group-hover:ring-primary transition-all"
+                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuD5GuBqwDMLPNka_4yVUJFscqznRy0QyRR011BgUOi2jhwq3EaBMuMnD9sax__600vxFwyaTieK5YM3zXymtjXHAZxcZJCfk_Tkr3NtZWuLuSDXzeVtrUJNoY5IzgavVUahVx8XaVDdn0RVk9MqFGBrFZiNAr_VQGsW5BaTSMOQe2bxHttiOaCtOWK8X1bojgnQ-ns1aalCtBih2AIGL0e5mt-NjJ5j9YD3heTm4_FLI_IKMLD92n2U4xAgzu0Dln21WwhETv3XzPI"
+                    />
+                    <div class="flex-1 min-w-0">
+                      <p class="font-bold text-sm truncate">
+                        Elena R.
+                        <span class="text-primary text-xs ml-1">★ 4.9</span>
+                      </p>
+                      <p class="text-xs text-slate-500">
+                        Experta en Química • $45.000 COP/hr
+                      </p>
+                    </div>
+                    <span
+                      class="material-symbols-outlined text-slate-400 group-hover:text-primary"
+                      >chevron_right</span
+                    >
+                  </div>
+                  <div
+                    class="flex items-center gap-3 group cursor-pointer hover:scale-105 transition-transform"
+                    onclick="
+                      window.location.href = 'tutor_profile.html?id=david'
+                    "
+                  >
+                    <img
+                      class="size-12 rounded-full ring-2 ring-primary/20 group-hover:ring-primary transition-all"
+                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuCttohCMfgWsIZ0MfHZLkFqjElOISFWncW0S2kZuU4LlfLi07yNLTMtrVC44I89LV1KcBlu-kvj_3aqjp5SEx_iGO9OJ3rODk4vpsYuZNQEUCsozkcfjV7Zu_GIw3VprEck8mavbsPMsVKJPwqc5Zm9VpnkReEMRHSrzR33TgIJJADneg6jK8LSOZ3G2M09d3hqd7WRoYPgtoVEx1-ZP0tL6jsdkwsFG7YS3_X6QaBdEeWhBT_1qNYp8gF4_q__G4BxmmMT1_LvTug"
+                    />
+                    <div class="flex-1 min-w-0">
+                      <p class="font-bold text-sm truncate">
+                        David Chen.
+                        <span class="text-primary text-xs ml-1">★ 5.0</span>
+                      </p>
+                      <p class="text-xs text-slate-500">
+                        Tutor STEM • $55.000 COP/hr
+                      </p>
+                    </div>
+                    <span
+                      class="material-symbols-outlined text-slate-400 group-hover:text-primary"
+                      >chevron_right</span
+                    >
+                  </div>
+                </div>
+                <button
+                  onclick="window.location.href = 'tutor_home.html'"
+                  class="w-full mt-6 py-2 bg-primary text-white rounded-lg text-sm font-bold hover:bg-primary/90 transition-colors"
+                >
+                  Ver Todos los Docentes
+                </button>
+              </div>
+
+              <!-- Study Stats -->
+              <div
+                class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-xl"
+              >
+                <h3
+                  class="text-sm font-bold uppercase text-slate-400 tracking-wider mb-4"
+                >
+                  Estadísticas de Estudio
+                </h3>
+                <div class="space-y-4">
+                  <div>
+                    <div class="flex justify-between text-sm mb-1.5">
+                      <span class="font-medium">Meta del Mes</span>
+                      <span class="font-bold" id="goal-label">12 / 20 hrs</span>
+                    </div>
+                    <div
+                      class="w-full h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden"
+                    >
+                      <div
+                        class="h-full bg-primary rounded-full transition-all duration-500"
+                        id="goal-bar"
+                        style="width: 60%"
+                      ></div>
+                    </div>
+                  </div>
+                  <div class="grid grid-cols-2 gap-4 pt-2">
+                    <div
+                      class="bg-slate-50 dark:bg-slate-800/50 p-3 rounded-lg text-center cursor-pointer hover:bg-primary/10 transition-colors"
+                      onclick="
+                        showToast('18 Clases Totales completed!', 'book_4')
+                      "
+                    >
+                      <p class="text-2xl font-bold" id="total-lessons">18</p>
+                      <p class="text-[10px] text-slate-500 uppercase font-bold">
+                        Clases Totales
+                      </p>
+                    </div>
+                    <div
+                      class="bg-slate-50 dark:bg-slate-800/50 p-3 rounded-lg text-center cursor-pointer hover:bg-primary/10 transition-colors"
+                      onclick="
+                        showToast(
+                          'Tu valoración media de tutores es 4,8 ⭐',
+                          'star',
+                        )
+                      "
+                    >
+                      <p class="text-2xl font-bold" id="avg-rating">4.8</p>
+                      <p class="text-[10px] text-slate-500 uppercase font-bold">
+                        Valoración Media
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

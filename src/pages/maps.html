@@ -1,0 +1,436 @@
+<!doctype html>
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>TutorMaster - Encuentra tu tutor en Barranquilla</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script src="../js/tailwind.config.js"></script>
+    <style>
+      body {
+        font-family: "Lexend", sans-serif;
+      }
+      .map-gradient {
+        background: linear-gradient(
+          180deg,
+          rgba(246, 247, 248, 0) 0%,
+          rgba(246, 247, 248, 1) 100%
+        );
+      }
+    </style>
+  </head>
+  <body
+    class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased overflow-hidden"
+  >
+    <div class="flex h-screen w-full flex-col">
+      <!-- Top Navigation Bar -->
+      <header
+        class="flex items-center justify-between whitespace-nowrap border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-6 py-3 z-50"
+      >
+        <div class="flex items-center gap-8">
+          <a href="tutor_home.html" class="flex items-center gap-2 text-primary hover:opacity-80 transition-opacity">
+            <span class="material-symbols-outlined text-3xl font-bold"
+              >school</span
+            >
+            <h2
+              class="text-slate-900 dark:text-white text-xl font-bold leading-tight tracking-[-0.015em]"
+            >
+              TutorMaster
+            </h2>
+          </a>
+          <div class="hidden md:flex items-center gap-4">
+            <label class="flex flex-col min-w-64 !h-10">
+              <div
+                class="flex w-full flex-1 items-stretch rounded-lg h-full border border-slate-200 dark:border-slate-700 overflow-hidden"
+              >
+                <div
+                  class="text-slate-400 flex bg-slate-50 dark:bg-slate-800 items-center justify-center px-3"
+                >
+                  <span class="material-symbols-outlined">location_on</span>
+                </div>
+                <input
+                  class="form-input flex w-full border-none bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-0 h-full placeholder:text-slate-400 px-2 text-sm"
+                  placeholder="Tu ubicación en Barranquilla (Ej: Malecón del Río)"
+                  value="Malecón del Río, Barranquilla"
+                />
+              </div>
+            </label>
+          </div>
+        </div>
+        <div class="flex flex-1 justify-end gap-6 items-center">
+          <nav class="hidden lg:flex items-center gap-6">
+            <a
+              class="text-slate-600 dark:text-slate-300 text-sm font-medium hover:text-primary transition-colors"
+              href="tutor_home.html"
+              >Explorar</a
+            >
+            <a
+              class="text-slate-600 dark:text-slate-300 text-sm font-medium hover:text-primary transition-colors"
+              href="calendario_estudiante.html"
+              >Mis Clases</a
+            >
+            <a
+              class="text-slate-600 dark:text-slate-300 text-sm font-medium hover:text-primary transition-colors"
+              href="perfil_estudiante.html"
+              >Perfil</a
+            >
+          </nav>
+          <button
+            onclick="document.documentElement.classList.toggle('dark')"
+            class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400"
+          >
+            <span class="material-symbols-outlined">dark_mode</span>
+          </button>
+          <div
+            class="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary border border-primary/20 overflow-hidden"
+          >
+            <img
+              alt="Avatar Usuario"
+              class="w-full h-full object-cover"
+              data-alt="Perfil de usuario sonriente"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBo7TQ_I2xYS3hIf4fVsucMpjl8MU6Rgw8Egi-q2WNauj0dugFOL_NqiA6dIpdqWZuzezgjqa18xCmTYY59lgCCaNHRtpS2WHLMKG7Sq-GniPdV7cSBQKgZfI-pAPoomlsxy8cP7MTLukCGPnX5JmJIXdK2ZK21WPKIBlAvvZyMpBpEL19e9ke-vfjfbUdAGUDG1BdNX_acpKfs1a3aaJ9bYzPfs9x6LSRZ-1yztrekf1FoaCv0KdgBq6Drsfz8V1RhP42wmOd05u0"
+            />
+          </div>
+        </div>
+      </header>
+      <div class="flex flex-1 overflow-hidden relative">
+        <!-- Sidebar Filters -->
+        <aside
+          class="w-80 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 flex flex-col gap-8 z-40 overflow-y-auto hidden md:flex"
+        >
+          <div>
+            <h3 class="text-slate-900 dark:text-white text-lg font-bold mb-1">
+              Filtros
+            </h3>
+            <p class="text-slate-500 dark:text-slate-400 text-xs">
+              Personaliza tu búsqueda de tutor
+            </p>
+          </div>
+          <!-- Materias -->
+          <div class="flex flex-col gap-3">
+            <p
+              class="text-sm font-semibold text-slate-700 dark:text-slate-200 flex items-center gap-2"
+            >
+              <span class="material-symbols-outlined text-lg">book</span>
+              Materia
+            </p>
+            <div class="flex flex-wrap gap-2">
+              <button
+                onclick="toggleMateria(this)"
+                class="px-3 py-1.5 rounded-full bg-primary text-white text-xs font-medium"
+              >
+                Matemáticas
+              </button>
+              <button
+                onclick="toggleMateria(this)"
+                class="px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-medium hover:bg-primary/10 transition-colors"
+              >
+                Física
+              </button>
+              <button
+                onclick="toggleMateria(this)"
+                class="px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-medium hover:bg-primary/10 transition-colors"
+              >
+                Programación
+              </button>
+              <button
+                onclick="toggleMateria(this)"
+                class="px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-medium hover:bg-primary/10 transition-colors"
+              >
+                Inglés
+              </button>
+              <button
+                onclick="toggleMateria(this)"
+                class="px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-medium hover:bg-primary/10 transition-colors"
+              >
+                Cálculo
+              </button>
+            </div>
+          </div>
+          <!-- Rango de Precio -->
+          <div class="flex flex-col gap-4">
+            <p
+              class="text-sm font-semibold text-slate-700 dark:text-slate-200 flex items-center gap-2"
+            >
+              <span class="material-symbols-outlined text-lg">payments</span>
+              Precio (COP/hr)
+            </p>
+            <div class="px-2">
+              <div class="flex gap-2 items-center w-full">
+                <div class="flex-1 flex items-center bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2">
+                  <span class="text-slate-400 text-xs">$</span>
+                  <input type="number" class="w-full bg-transparent border-none text-xs text-slate-700 dark:text-slate-300 focus:ring-0 px-1 py-1.5" placeholder="Min" value="40000" />
+                </div>
+                <span class="text-slate-400 text-xs font-medium">-</span>
+                <div class="flex-1 flex items-center bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2">
+                  <span class="text-slate-400 text-xs">$</span>
+                  <input type="number" class="w-full bg-transparent border-none text-xs text-slate-700 dark:text-slate-300 focus:ring-0 px-1 py-1.5" placeholder="Max" value="80000" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Modalidad -->
+          <div class="flex flex-col gap-3">
+            <p
+              class="text-sm font-semibold text-slate-700 dark:text-slate-200 flex items-center gap-2"
+            >
+              <span class="material-symbols-outlined text-lg">videocam</span>
+              Modalidad
+            </p>
+            <div class="flex flex-col gap-2">
+              <label class="flex items-center gap-3 cursor-pointer group">
+                <input
+                  checked=""
+                  class="rounded border-slate-300 text-primary focus:ring-primary"
+                  type="checkbox"
+                />
+                <span
+                  class="text-sm text-slate-600 dark:text-slate-300 group-hover:text-primary transition-colors"
+                  >Presencial</span
+                >
+              </label>
+              <label class="flex items-center gap-3 cursor-pointer group">
+                <input
+                  checked=""
+                  class="rounded border-slate-300 text-primary focus:ring-primary"
+                  type="checkbox"
+                />
+                <span
+                  class="text-sm text-slate-600 dark:text-slate-300 group-hover:text-primary transition-colors"
+                  >Virtual</span
+                >
+              </label>
+            </div>
+          </div>
+          <!-- Spacer -->
+          <div class="mt-auto">
+            <button
+              class="w-full bg-primary text-white py-3 rounded-xl font-bold text-sm shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all flex items-center justify-center gap-2"
+            >
+              <span class="material-symbols-outlined">bolt</span>
+              RESERVA EXPRESS
+            </button>
+          </div>
+        </aside>
+        <!-- Main Map Area -->
+        <main class="flex-1 relative bg-slate-100">
+          <!-- Map Placeholder -->
+          <div
+            class="absolute inset-0 z-0 overflow-hidden bg-slate-200 dark:bg-slate-800"
+          >
+            <img
+              class="w-full h-full object-cover opacity-60 grayscale-[0.5] contrast-[1.1] dark:invert dark:hue-rotate-180 dark:brightness-95 dark:contrast-90"
+              data-alt="Mapa satelital detallado de la ciudad de Barranquilla Colombia"
+              data-location="Barranquilla"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBoSOtRT5hE0q-cVuiMANgNdTlhDyAas-ZNlhPVHLkSMBSkY3rJhV-aveK9M0Boc93muYhgSxGeqjZAQJWeSNsoOK6I9eEfkh1NTjfuXvUAEoLEJkf9A5ZZWJA2DHROhR17a1-kUU-_OfKwENn8Pw96yCcQKbcm2PNa35zDpebEhnEw18nZT-AeXioSgFfWbQTGCTwVymaB6wJdXQOz2MLfa3LfoqB_ttb6kDqbckwZ-eSGPc7CznaF2dHFEPTnSRXd-GvUsB55ZoU"
+            />
+            <!-- Pins on Map -->
+            <!-- Pin 1: Near Malecón -->
+            <div
+              class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 group cursor-pointer"
+            >
+              <div class="relative flex flex-col items-center">
+                <div
+                  class="bg-primary text-white p-2 rounded-full shadow-xl animate-bounce"
+                >
+                  <span class="material-symbols-outlined">school</span>
+                </div>
+                <div
+                  class="absolute -bottom-1 w-2 h-2 bg-primary rotate-45"
+                ></div>
+                <div
+                  class="mt-2 bg-white dark:bg-slate-900 px-2 py-1 rounded text-[10px] font-bold shadow-md border border-slate-100 dark:border-slate-800"
+                >
+                  Sarah Jenkins
+                </div>
+              </div>
+            </div>
+            <!-- Pin 2: Near Ventana al Mundo -->
+            <div class="absolute top-[15%] left-[40%] group cursor-pointer">
+              <div class="relative flex flex-col items-center">
+                <div
+                  class="bg-emerald-500 text-white p-2 rounded-full shadow-xl"
+                >
+                  <span class="material-symbols-outlined">school</span>
+                </div>
+                <div
+                  class="absolute -bottom-1 w-2 h-2 bg-emerald-500 rotate-45"
+                ></div>
+                <div
+                  class="mt-2 bg-white dark:bg-slate-900 px-2 py-1 rounded text-[10px] font-bold shadow-md border border-slate-100 dark:border-slate-800"
+                >
+                  Lucía R.
+                </div>
+              </div>
+            </div>
+            <!-- Landmark Tags -->
+            <div
+              class="absolute top-[28%] left-[55%] bg-white/80 dark:bg-slate-900/80 backdrop-blur px-3 py-1.5 rounded-full border border-slate-200 dark:border-slate-700 flex items-center gap-2 shadow-sm"
+            >
+              <span class="material-symbols-outlined text-primary text-sm"
+                >flag</span
+              >
+              <span
+                class="text-[10px] font-bold tracking-wider text-slate-700 dark:text-slate-300"
+                >MALECÓN DEL RÍO</span
+              >
+            </div>
+            <div
+              class="absolute top-[10%] left-[32%] bg-white/80 dark:bg-slate-900/80 backdrop-blur px-3 py-1.5 rounded-full border border-slate-200 dark:border-slate-700 flex items-center gap-2 shadow-sm"
+            >
+              <span class="material-symbols-outlined text-primary text-sm"
+                >shrine</span
+              >
+              <span
+                class="text-[10px] font-bold tracking-wider text-slate-700 dark:text-slate-300"
+                >VENTANA AL MUNDO</span
+              >
+            </div>
+          </div>
+          <!-- Floating UI Elements -->
+          <div class="absolute top-6 right-6 flex flex-col gap-2 z-10">
+            <button
+              class="w-12 h-12 bg-white dark:bg-slate-900 rounded-xl shadow-lg border border-slate-100 dark:border-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:text-primary transition-colors"
+            >
+              <span class="material-symbols-outlined">my_location</span>
+            </button>
+            <div
+              class="flex flex-col bg-white dark:bg-slate-900 rounded-xl shadow-lg border border-slate-100 dark:border-slate-800 overflow-hidden"
+            >
+              <button
+                class="w-12 h-12 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:text-primary transition-colors border-b border-slate-100 dark:border-slate-800"
+              >
+                <span class="material-symbols-outlined">add</span>
+              </button>
+              <button
+                class="w-12 h-12 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:text-primary transition-colors"
+              >
+                <span class="material-symbols-outlined">remove</span>
+              </button>
+            </div>
+          </div>
+          <!-- Tutor Profile Card (Floating/Slide-in) -->
+          <div
+            class="absolute bottom-6 left-1/2 -translate-x-1/2 md:left-6 md:translate-x-0 w-[calc(100%-3rem)] md:w-96 z-20"
+          >
+            <div
+              class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 p-5 flex flex-col gap-4"
+            >
+              <div class="flex gap-4 items-start">
+                <div
+                  class="w-16 h-16 rounded-xl bg-slate-100 dark:bg-slate-800 overflow-hidden relative border border-slate-200 dark:border-slate-700"
+                >
+                  <img
+                    alt="Sarah Jenkins"
+                    class="w-full h-full object-cover"
+                    data-alt="Foto de perfil de la tutora Sarah"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFM9uJFRzShDrkztGDRdisHG_YsaFa0AOkVbGMa9MymUdBtb472xdhjltkpBZa856il_VfCKh-US3Z6VJhFSlZHh1BxI2YonUrYFgcW-uo_D9unh4SHb7PPGcC2di_VAWzL8-otj35HSFtnTioVdBjA5Jsz9W7iBYUwj7M6qCMkmhIq-pjzy4jevmBNYnCnXfu5La7UMQSXtg8NPtOUun9WjlVBqYZXsHDNvZBQRfgXgPXNdWPrM6gJXD4DWRW-gJHrVp0syIfUFg"
+                  />
+                  <div
+                    class="absolute bottom-0 right-0 w-4 h-4 bg-emerald-500 border-2 border-white dark:border-slate-900 rounded-full"
+                  ></div>
+                </div>
+                <div class="flex-1">
+                  <div class="flex items-center justify-between mb-0.5">
+                    <h4
+                      class="text-slate-900 dark:text-white font-bold text-lg"
+                    >
+                      Sarah Jenkins
+                    </h4>
+                    <span
+                      class="bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 text-[10px] font-bold px-2 py-0.5 rounded flex items-center gap-1"
+                    >
+                      <span class="material-symbols-outlined text-[12px] fill-1"
+                        >star</span
+                      >
+                      4.9
+                    </span>
+                  </div>
+                  <p class="text-primary text-sm font-medium mb-1">
+                    Data Analyst Senior
+                  </p>
+                  <div
+                    class="flex items-center gap-3 text-slate-500 dark:text-slate-400 text-xs"
+                  >
+                    <span class="flex items-center gap-1"
+                      ><span class="material-symbols-outlined text-sm"
+                        >schedule</span
+                      >
+                      15 mins (Malecón)</span
+                    >
+                    <span
+                      class="flex items-center gap-1 font-bold text-slate-700 dark:text-slate-200"
+                      >$80.000 COP/hr</span
+                    >
+                  </div>
+                </div>
+              </div>
+              <div class="flex flex-col gap-2">
+                <p
+                  class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2"
+                >
+                  Experta en análisis de datos y visualización con Python y SQL. Más de 8 años de experiencia corporativa.
+                </p>
+              </div>
+              <div class="flex gap-2">
+                <button
+                  onclick="window.location.href='tutor_home.html'"
+                  class="flex-1 bg-primary text-white py-3 rounded-xl font-bold text-sm shadow-md hover:bg-primary/90 transition-all"
+                >
+                  SOLICITAR TUTORÍA YA
+                </button>
+                <button
+                  onclick="window.location.href='mensajes.html'"
+                  class="w-12 h-12 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-xl flex items-center justify-center hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                >
+                  <span class="material-symbols-outlined">chat</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <!-- Live Notification -->
+          <div
+            class="absolute top-6 left-1/2 -translate-x-1/2 bg-white/90 dark:bg-slate-900/90 backdrop-blur px-4 py-2 rounded-full shadow-lg border border-primary/20 flex items-center gap-3 z-10"
+          >
+            <span class="flex h-2 w-2 relative">
+              <span
+                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"
+              ></span>
+              <span
+                class="relative inline-flex rounded-full h-2 w-2 bg-primary"
+              ></span>
+            </span>
+            <p class="text-xs font-semibold text-slate-700 dark:text-slate-200">
+              12 Tutores disponibles cerca de ti en
+              <span class="text-primary">Barranquilla</span>
+            </p>
+          </div>
+        </main>
+      </div>
+    </div>
+    <script>
+      function toggleMateria(btn) {
+        if (btn.classList.contains('bg-primary')) {
+          btn.classList.remove('bg-primary', 'text-white');
+          btn.classList.add('bg-slate-100', 'dark:bg-slate-800', 'text-slate-600', 'dark:text-slate-300');
+        } else {
+          btn.classList.remove('bg-slate-100', 'dark:bg-slate-800', 'text-slate-600', 'dark:text-slate-300');
+          btn.classList.add('bg-primary', 'text-white');
+        }
+      }
+    </script>
+  </body>
+</html>

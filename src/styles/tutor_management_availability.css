@@ -1,0 +1,73 @@
+body {
+            font-family: 'Lexend', sans-serif;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #dbe0e6;
+            border-radius: 10px;
+        }
+
+        #toast {
+            transition: opacity 0.4s, transform 0.4s;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        #toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .cell-available {
+            background: rgba(19, 127, 236, 0.12);
+            cursor: pointer;
+        }
+
+        .cell-available:hover {
+            background: rgba(19, 127, 236, 0.22);
+        }
+
+        .cell-booked {
+            background: rgba(15, 23, 42, 0.08);
+            cursor: not-allowed;
+        }
+
+        .dark .cell-booked {
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .cell-empty {
+            cursor: pointer;
+        }
+
+        .cell-empty:hover {
+            background: rgba(19, 127, 236, 0.07);
+        }
+
+        #payout-modal {
+            display: none;
+        }
+
+        #payout-modal.active {
+            display: flex;
+        }
+
+        #share-modal {
+            display: none;
+        }
+
+        #share-modal.active {
+            display: flex;
+        }
