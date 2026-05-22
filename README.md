@@ -40,9 +40,9 @@ Estilos específicos complementarios a TailwindCSS.
 
 - Contiene **`tutor_home.css`**, **`tutor_profile.css`**, etc. Manejan animaciones, customizaciones de la barra de desplazamiento y ajustes específicos que Tailwind por sí solo no cubre mediante clases.
 
-### Directorio `src/data/`
+### Directorio `.env`
 
-- **`tutores.json`**: Funciona como la base de datos (Single Source of Truth) para la información de los tutores, garantizando la consistencia de datos e imágenes en todas las vistas.
+- **`.rnv`**: Funciona como la base de datos para la información de los tutores y estudiantes, garantizando la consistencia de datos e imágenes en todas las vistas.
 
 ---
 
