@@ -54,8 +54,6 @@ Este proyecto está construido con un stack frontend puro y ligero, optimizado p
 - **CSS3**: Variables CSS nativas, Media Queries y animaciones personalizadas.
 - **TailwindCSS (v3 vía CDN)**: Framework principal para el estilizado rápido, diseño responsive y soporte nativo de Modo Oscuro (`dark mode`).
 - **Vanilla JavaScript (ES6+)**: Toda la interactividad, DOM manipulation y consumo de JSON se realiza mediante JS puro, sin frameworks pesados, garantizando tiempos de carga ultrarrápidos.
-- **Material Symbols Outlined**: Sistema de iconografía de Google.
-- **Google Fonts (Lexend)**: Tipografía moderna y altamente legible.
 
 ---
 
