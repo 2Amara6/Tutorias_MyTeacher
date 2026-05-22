@@ -1,4 +1,21 @@
-// Funciones de modo oscuro y toast movidas a utils.js
+﻿// Funciones de modo oscuro y toast movidas a utils.js
+
+        function renderViewerAuth() {
+            const token = localStorage.getItem('token');
+            const user = getStoredUser();
+            const loginBtn = document.getElementById('nav-login-btn');
+            const profileLink = document.getElementById('nav-profile-link');
+            const profileImage = document.getElementById('nav-profile-image');
+            if (!loginBtn || !profileLink || !profileImage) return;
+            if (!token || !user.id) {
+                loginBtn.classList.remove('hidden');
+                profileLink.classList.add('hidden');
+                return;
+            }
+            loginBtn.classList.add('hidden');
+            profileLink.classList.remove('hidden');
+            profileImage.src = getUserProfileImage(user);
+        }
 
         // Tabs
         function switchTab(name) {
@@ -16,26 +33,59 @@
 
         // Save / Favorite
         let saved = false;
+        let currentTutorUserId = null;
+        let currentTutorName = 'Tutor';
         function toggleSave(btn) {
             saved = !saved;
             document.getElementById('save-icon').textContent = saved ? 'favorite' : 'favorite_border';
-            document.getElementById('save-label').textContent = saved ? '¡Guardado!' : 'Save';
+            document.getElementById('save-label').textContent = saved ? 'Guardado' : 'Guardar';
             btn.className = saved
                 ? 'px-4 py-2 bg-red-50 text-red-500 rounded-lg font-semibold text-sm flex items-center gap-2 transition-colors'
                 : 'px-4 py-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg font-semibold text-sm flex items-center gap-2 hover:bg-red-50 hover:text-red-500 transition-colors';
-            showToast(saved ? '¡Tutor guardado en favoritos!' : 'Eliminado de favoritos', saved ? 'favorite' : 'favorite_border');
+            showToast(saved ? 'Tutor guardado en favoritos' : 'Eliminado de favoritos', saved ? 'favorite' : 'favorite_border');
         }
 
         // Message Modal
-        function openMsgModal() { document.getElementById('msg-modal').classList.add('active'); }
+        function openMsgModal() {
+            const input = document.getElementById('msg-text');
+            if (input) input.placeholder = `Hola ${currentTutorName}, me gustaria hablar sobre...`;
+            document.getElementById('msg-modal').classList.add('active');
+        }
         function closeMsgModal() { document.getElementById('msg-modal').classList.remove('active'); }
         document.getElementById('msg-modal').addEventListener('click', function (e) { if (e.target === this) closeMsgModal(); });
-        function sendMessage() {
+        async function sendMessage() {
             const text = document.getElementById('msg-text').value.trim();
             if (!text) { showToast('Por favor, escribe un mensaje primero', 'error'); return; }
-            closeMsgModal();
-            document.getElementById('msg-text').value = '';
-            showToast('¡Mensaje enviado a la Dra. Sarah Jenkins!', 'send');
+            const token = localStorage.getItem('token');
+            if (!token) {
+                showToast('Por favor inicia sesion para enviar mensajes.', 'error');
+                return;
+            }
+            if (!currentTutorUserId) {
+                showToast('No se pudo identificar el tutor para enviar el mensaje.', 'error');
+                return;
+            }
+
+            try {
+                const res = await fetch('http://localhost:3000/api/messages', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ receiverId: currentTutorUserId, content: text })
+                });
+                const data = await res.json().catch(() => ({}));
+                if (!res.ok) {
+                    showToast(data.error || 'No se pudo enviar el mensaje', 'error');
+                    return;
+                }
+                closeMsgModal();
+                document.getElementById('msg-text').value = '';
+                showToast(`Mensaje enviado a ${currentTutorName}`, 'send');
+            } catch (error) {
+                showToast('Error de conexion', 'error');
+            }
         }
 
         // Session Type
@@ -101,7 +151,7 @@
             container.innerHTML = timeSlots.map(slot => {
                 const isBooked = slot === bookedSlot;
                 const isSel = slot === selectedTime;
-                if (isBooked) return `<button disabled class="py-2 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold bg-slate-50 dark:bg-slate-800 text-slate-400 cursor-not-allowed">${slot} ✗</button>`;
+                if (isBooked) return `<button disabled class="py-2 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold bg-slate-50 dark:bg-slate-800 text-slate-400 cursor-not-allowed">${slot} âœ—</button>`;
                 if (isSel) return `<button onclick="selectTime('${slot}')" class="py-2 bg-primary/10 border border-primary text-primary rounded-lg text-xs font-bold">${slot}</button>`;
                 return `<button onclick="selectTime('${slot}')" class="py-2 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold hover:border-primary hover:text-primary transition-colors">${slot}</button>`;
             }).join('');
@@ -124,10 +174,45 @@
         }
         function closeBookModal() { document.getElementById('book-modal').classList.remove('active'); }
         document.getElementById('book-modal').addEventListener('click', function (e) { if (e.target === this) closeBookModal(); });
-        function confirmBooking() {
-            closeBookModal();
-            showToast('¡Reserva confirmada! Revisa tu correo para más detalles.', 'check_circle');
-            setTimeout(() => window.location.href = 'perfil_estudiante.html', 2000);
+        async function confirmBooking() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                showToast('Por favor inicia sesiÃ³n para agendar.', 'error');
+                setTimeout(() => window.location.href = 'tutor_home.html', 2000);
+                return;
+            }
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const tutorId = urlParams.get('id');
+
+            if (!tutorId) return showToast('Error: Tutor no encontrado.', 'error');
+
+            const payload = {
+                tutorId,
+                date: new Date(viewYear, viewMonth, selectedDay).toISOString(),
+                durationMinutes: 60
+            };
+
+            try {
+                const res = await fetch('http://localhost:3000/api/appointments', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(payload)
+                });
+                if (res.ok) {
+                    closeBookModal();
+                    showToast('Â¡Reserva confirmada!', 'check_circle');
+                    setTimeout(() => window.location.href = 'perfil_estudiante.html', 2000);
+                } else {
+                    const data = await res.json();
+                    showToast(data.error || 'Error al agendar. Â¿Eres estudiante?', 'error');
+                }
+            } catch (err) {
+                showToast('Error de conexiÃ³n', 'error');
+            }
         }
 
         function quickBook() {
@@ -137,12 +222,7 @@
         }
 
         // Reviews
-        const reviews = [
-            { name: 'Marcus K.', rating: 5, date: 'hace 2 días', text: '"¡Sarah es increíble! She helped me understand calculus concepts that I\'ve been struggling with for months in just one hour. She\'s very patient and has a unique way of explaining things."', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDeBVUuzxw9l-s97uvOAtsAomuzZ2lRkg9LRSxJ5pveUbWuHyIciyT1owJZybPlFwvXyA-Tn2MQsZ_JeizLdXiO5aoyZASDO56kBaTLIJTzVedUy9tyk_YYGGm3Qf34Q9QICyjDCzRPyGEBW_P22VsD6O3iMM0huQRIaD8DqKhA38lvuTLoO9osjCzOl_ITjIfonsV3OKI-0i91y1MYXLXbebKw3UlsxAgScuxR2voMUXsT11-Jva9hVw0agwb-ELJ7KMzJiK7GK_c' },
-            { name: 'Elena R.', rating: 5, date: 'hace 1 semana', text: '"Perfecta para preparar el SAT. Mi puntaje de matemáticas subió 120 puntos después de 5 sesiones con Sarah. La recomiendo ampliamente a cualquier estudiante serio."', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB838H0geEWZIJa7oKMP2xCQ2EPmxMr9NQ-ZucvICRMCboQ2XgqCP8rtoQSPIx5gkR-ySKXljvHm1IKX5k42qxk-swepRvoR6kBRKKdq7j0BaUnkQa0JWhbSZu4pkufTNaNDUT9bFAhoM8wxfxSEXAAON4v2NADWb5sAqy3R352G7P_1ShMWp-bKO0QtY3KRPaS0R21KhX4D9aqGCe3sgMwL0GCt7VOiLnSZosnBVYNZOAu0HIhu-wtFWIao7An62VUeA1pMviNbBU' },
-            { name: 'James T.', rating: 5, date: 'hace 2 semanas', text: '"Absolutamente brillante. Mi nota de Álgebra Lineal subió de una C a una A- en un semestre."', img: null },
-            { name: 'Priya S.', rating: 4, date: 'hace 3 semanas', text: '"¡Gran tutora! She\'s very knowledgeable and explains well. Schedules can sometimes be tight."', img: null },
-        ];
+        let reviews = [];
 
         let showAll = false;
 
@@ -150,6 +230,11 @@
             let sorted = [...reviews];
             if (sort === 'highest') sorted.sort((a, b) => b.rating - a.rating);
             const list = document.getElementById('reviews-list');
+            if (!reviews.length) {
+                list.innerHTML = '<p class="p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 text-sm text-slate-500">Este tutor todavía no tiene reseñas.</p>';
+                document.getElementById('load-more-btn').style.display = 'none';
+                return;
+            }
             const displayed = showAll ? sorted : sorted.slice(0, 2);
             list.innerHTML = displayed.map(r => `
             <div class="p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm">
@@ -176,22 +261,60 @@
 
         // Dynamic Loading
         document.addEventListener('DOMContentLoaded', async () => {
+            renderViewerAuth();
             const urlParams = new URLSearchParams(window.location.search);
             const tutorId = urlParams.get('id');
             if (tutorId) {
                 try {
-                    const response = await fetch('../data/tutores.json');
-                    const tutores = await response.json();
-                    const tutor = tutores.find(t => t.id === tutorId);
+                    const response = await fetch(`http://localhost:3000/api/tutores/${tutorId}`);
+                    if (!response.ok) throw new Error('Tutor no encontrado');
+                    const apiTutor = await response.json();
+                    
+                    const ratingStr = apiTutor.reviews && apiTutor.reviews.length > 0 
+                        ? (apiTutor.reviews.reduce((acc, r) => acc + r.rating, 0) / apiTutor.reviews.length).toFixed(1) 
+                        : "0.0";
+                        
+                    const tutor = {
+                        name: `${apiTutor.user.firstName} ${apiTutor.user.lastName}`,
+                        userId: apiTutor.user.id,
+                        title: apiTutor.subjects,
+                        rating: parseFloat(ratingStr),
+                        reviewsCount: apiTutor.reviews ? apiTutor.reviews.length : 0,
+                        price: apiTutor.hourlyRate,
+                        img: apiTutor.user.profileImage || 'https://via.placeholder.com/150',
+                        about: apiTutor.bio,
+                        badges: apiTutor.subjects ? apiTutor.subjects.split(',').map(s => s.trim()) : []
+                    };
+                    reviews = (apiTutor.reviews || []).map(r => ({
+                        name: `${r.student?.firstName || 'Estudiante'} ${r.student?.lastName || ''}`.trim(),
+                        rating: r.rating,
+                        date: new Date(r.createdAt).toLocaleDateString(),
+                        text: r.comment || 'Sin comentario escrito.',
+                        img: r.student?.profileImage || null
+                    }));
                     
                     if (tutor) {
+                        currentTutorName = tutor.name;
+                        currentTutorUserId = tutor.userId;
                         document.getElementById('tutor-name').textContent = tutor.name;
+                        
+                        const bookingNameEl = document.getElementById('modal-tutor-name-booking');
+                        if (bookingNameEl) bookingNameEl.textContent = tutor.name;
+                        const summaryNameEl = document.getElementById('modal-tutor-name-summary');
+                        if (summaryNameEl) summaryNameEl.textContent = tutor.name;
+                        const msgNameEl = document.getElementById('modal-tutor-name-msg');
+                        if (msgNameEl) msgNameEl.textContent = `Mensaje para ${tutor.name}`;
+                        const breadcrumbNameEl = document.getElementById('breadcrumb-tutor-name');
+                        if (breadcrumbNameEl) breadcrumbNameEl.textContent = tutor.name;
+
                         const titleEl = document.getElementById('tutor-title');
                         if (titleEl) titleEl.textContent = tutor.title;
                         const ratingEl = document.getElementById('tutor-rating');
                         if (ratingEl) ratingEl.textContent = tutor.rating.toFixed(1);
                         const reviewsEl = document.getElementById('tutor-reviews-count');
-                        if (reviewsEl) reviewsEl.textContent = `(${tutor.reviewsCount} Reseñas)`;
+                        if (reviewsEl) reviewsEl.textContent = `(${tutor.reviewsCount} ReseÃ±as)`;
+                        const reviewsTabLabel = document.getElementById('reviews-tab-label');
+                        if (reviewsTabLabel) reviewsTabLabel.textContent = `Reviews (${tutor.reviewsCount})`;
                         const priceEl = document.getElementById('tutor-price');
                         if (priceEl) priceEl.textContent = tutor.price;
                         const imgEl = document.getElementById('tutor-image');
@@ -208,7 +331,7 @@
                             if (tutor.about) {
                                 aboutEl.innerHTML = `<p class="text-slate-600 dark:text-slate-400 leading-relaxed">${tutor.about}</p>`;
                             } else {
-                                aboutEl.innerHTML = `<p class="text-slate-600 dark:text-slate-400 leading-relaxed italic">Este tutor no ha agregado una descripción aún.</p>`;
+                                aboutEl.innerHTML = `<p class="text-slate-600 dark:text-slate-400 leading-relaxed italic">Este tutor no ha agregado una descripciÃ³n aÃºn.</p>`;
                             }
                         }
                         
@@ -217,6 +340,17 @@
                         if (badgesEl && tutor.badges) {
                             badgesEl.innerHTML = tutor.badges.map(b => `<span class="px-3 py-1 bg-primary/10 text-primary text-xs font-bold rounded-full flex items-center gap-1">${b}</span>`).join('');
                         }
+                        const subjectsList = document.getElementById('subjects-list');
+                        if (subjectsList) {
+                            subjectsList.innerHTML = tutor.badges.length
+                                ? tutor.badges.map(subject => `<span class="px-3 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm">${subject}</span>`).join('')
+                                : '<p class="text-sm text-slate-500">Este tutor todavía no registró materias.</p>';
+                        }
+                        const educationList = document.getElementById('education-list');
+                        if (educationList) {
+                            educationList.innerHTML = '<p class="p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 text-sm text-slate-500">Este tutor todavía no registró educación o credenciales.</p>';
+                        }
+                        renderReviews();
 
                         // Hide loading and show content
                         const loadingEl = document.getElementById('tutor-loading');
@@ -246,3 +380,4 @@
             const notFound = document.getElementById('tutor-not-found');
             if (notFound) notFound.classList.remove('hidden');
         }
+

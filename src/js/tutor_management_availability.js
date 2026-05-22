@@ -1,5 +1,34 @@
 // Funciones de modo oscuro y toast movidas a utils.js
 
+        const formatCOP = (value = 0) => `$${Number(value || 0).toLocaleString()} COP`;
+        let tutorAppointments = [];
+        let tutorReviewCount = 0;
+        let tutorHoursTaught = 0;
+        let tutorCurrentBalance = 0;
+
+        function openSettings() {
+            const user = getStoredUser();
+            document.getElementById('settings-user-name').textContent = getUserDisplayName(user);
+            document.getElementById('settings-user-email').textContent = user.email || 'Cuenta activa';
+            document.getElementById('settings-user-image').src = getUserProfileImage(user);
+            document.getElementById('settings-modal').classList.add('active');
+        }
+
+        function closeSettings() {
+            document.getElementById('settings-modal').classList.remove('active');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const settingsModal = document.getElementById('settings-modal');
+            if (settingsModal) {
+                settingsModal.addEventListener('click', (e) => {
+                    if (e.target === settingsModal) closeSettings();
+                });
+            }
+            updateReputation([]);
+            updateTeachingStats([]);
+        });
+
         // Navigation tabs
         function setNav(active) {
             ['management', 'students', 'materials'].forEach(n => {
@@ -28,8 +57,21 @@
 
         // Notifications
         function toggleNotifications() {
-            document.getElementById('notif-dot').style.display = 'none';
+            const dot = document.getElementById('notif-dot');
+            if (dot) dot.style.display = 'none';
             showToast('Sin nuevas notificaciones', 'notifications');
+        }
+
+        function showCurrentBalance() {
+            showToast(`Saldo total: ${formatCOP(tutorCurrentBalance)}`, 'trending_up');
+        }
+
+        function showHoursTaught() {
+            showToast(`${tutorHoursTaught.toFixed(tutorHoursTaught % 1 ? 1 : 0)} horas enseñadas`, 'schedule');
+        }
+
+        function showReviewCount() {
+            showToast(`${tutorReviewCount} reseña${tutorReviewCount === 1 ? '' : 's'} cargada${tutorReviewCount === 1 ? '' : 's'}`, 'star');
         }
 
         // View toggle
@@ -49,10 +91,7 @@
         let viewDate = new Date();
         let currentViewMode = 'week';
         // availability state: key = "dayIndex-timeIndex", value: 'available'|'booked'|'empty'
-        const initialState = {
-            '2-0': 'available', '0-1': 'available', '1-1': 'booked',
-            '2-1': 'available', '3-1': 'available', '4-1': 'available',
-        };
+        const initialState = {};
         let availability = { ...initialState };
 
         let times = ['08:00 AM', '09:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', '01:00 PM', '02:00 PM', '03:00 PM'];
@@ -107,7 +146,7 @@
                     cellsHTML += `<div class="p-2 min-h-[100px] hover:bg-slate-50 dark:hover:bg-slate-800/50 cursor-pointer ${isToday ? 'bg-primary/5' : ''}">
                         <span class="text-sm font-bold ${isToday ? 'text-primary' : ''}">${d}</span>
                         <div class="mt-2 text-[10px] text-primary flex flex-col gap-1">
-                            ${Math.random() > 0.7 ? '<span class="bg-primary/10 px-1 rounded">1 Clase</span>' : ''}
+                            ${getAppointmentsForDay(d).length ? `<span class="bg-primary/10 px-1 rounded">${getAppointmentsForDay(d).length} Clase${getAppointmentsForDay(d).length > 1 ? 's' : ''}</span>` : ''}
                         </div>
                     </div>`;
                 }
@@ -201,14 +240,16 @@
         function openPayoutModal() { document.getElementById('payout-modal').classList.add('active'); }
         function closePayoutModal() { document.getElementById('payout-modal').classList.remove('active'); }
         document.getElementById('payout-modal').addEventListener('click', function (e) { if (e.target === this) closePayoutModal(); });
-        function confirmPayout() { closePayoutModal(); showToast('¡Pago de \.250 solicitado! Listo en 1-3 días hábiles.', 'payments'); }
+        function confirmPayout() { closePayoutModal(); showToast('Los métodos de pago estarán disponibles próximamente.', 'schedule'); }
 
         // Share Modal
         function openShareModal() { document.getElementById('share-modal').classList.add('active'); }
         function closeShareModal() { document.getElementById('share-modal').classList.remove('active'); }
         document.getElementById('share-modal').addEventListener('click', function (e) { if (e.target === this) closeShareModal(); });
         function copyShareUrl() {
-            navigator.clipboard.writeText('https://tutorhub.pro/andresCastilla').then(() => showToast('¡Enlace copiado al portapapeles!', 'content_copy')).catch(() => showToast('Enlace copiado: tutorhub.pro/andresCastilla', 'content_copy'));
+            const user = getStoredUser();
+            const shareUrl = `${window.location.origin}${window.location.pathname.replace(/\/src\/pages\/[^/]+$/, '/src/pages/tutor_profile.html')}?id=${encodeURIComponent(user.tutorProfileId || '')}`;
+            navigator.clipboard.writeText(shareUrl).then(() => showToast('Enlace copiado al portapapeles', 'content_copy')).catch(() => showToast('Enlace copiado', 'content_copy'));
             closeShareModal();
         }
         function shareOn(platform) {
@@ -216,95 +257,194 @@
             showToast(`Opening ${platform} to share your profile...`, 'share');
         }
 
-        // Reviews
-        const reviews = [
-            { name: 'Sarah M.', text: '"¡Excelente explicando conceptos de Cálculo. Lo recomiendo!"', rating: 5 },
-            { name: 'Robert K.', text: '"Muy paciente y experto. ¡Mi nota mejoró notablemente!"', rating: 5 },
-            { name: 'Amy L.', text: '"¡Gran tutor! Siempre puntual y bien preparado."', rating: 4 },
-        ];
+        // Reviews render logic moved to loadProfileAndRequests
 
-        document.getElementById('reviews-list').innerHTML = reviews.map(r => `
-        <div class="space-y-2">
-            <div class="flex items-center gap-2">
-                <div class="size-6 rounded-full bg-primary/20 flex items-center justify-center text-primary text-xs font-bold">${r.name[0]}</div>
-                <span class="text-xs font-bold">${r.name}</span>
-                <div class="flex text-amber-400 scale-75 origin-left">${'<span class="material-symbols-outlined text-xs fill-1">star</span>'.repeat(r.rating)}</div>
-            </div>
-            <p class="text-xs text-slate-600 dark:text-slate-400 italic leading-relaxed">${r.text}</p>
-        </div>
-    `).join('<hr class="border-slate-100 dark:border-slate-800"/>');
+        let pendingRequests = [];
 
-        // Requests
-        const requests = [
-            { name: 'Emily Rose', subject: 'Álgebra II', date: 'Oct 14, 09:00 AM', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBdpkbVwNxv_zfK0tnU_54qBj4n10iGBjdN2of56BGzGx9_nDOsBVtUXvDNKMed5qvNwx1eDjRdJup4-MTK2Cjhd-UvevIHR6LGLgJtT6orOqn_CsHuesh6Fbu5X4O6vjt3GRvhA49kGvLe7CoSMjYV9eIY3qpO2bRDXbvGNdAK9WY9EFzvE51yraCPwsJ_yMDroBY625Zq26riT4QO9r8XcmRwdZOpavZ1WkTwcrojcsBuRwWq5A68D1tZrL4c4aYFnDtrkyBCNJA' },
-            { name: 'Marcus Chen', subject: 'Álgebra Lineal', date: 'Oct 15, 03:30 PM', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCaoK2t5OPQ_aJgeHzlP2bTIfx-v5bIZ_dJCb048A6IHNJSnSqv5qObrnfF5_YHJgUfnc8mzmWHIY-g9x2lkp2QVN4-x0r5ajmlTWOmodZ66aVVXw6vlcVW5s5sHTpV4oI4KMfn-ZuP0v4QXNQHfD1jG0VNkrD9hsq0BVLJcmv4zKlOchlDsYXmYiu6CW9hEjPmSPCnSLL7FAIs9aaWWzFHsGm_X0OHt0aR509G51n0jr1U6T3TXw1U0vthYB6iKC-AwsFnBxhOH54' },
-            { name: 'Jamie Lin', subject: 'Fundamentos de Cálculo', date: 'Oct 16, 11:00 AM', img: null },
-        ];
-        let pendingRequests = [...requests];
+        async function loadProfileAndRequests() {
+            const token = localStorage.getItem('token');
+            const user = getStoredUser();
+            if (!token) {
+                window.location.href = 'tutor_home.html';
+                return;
+            }
+            if (user.role !== 'TUTOR') {
+                window.location.href = getUserHome(user);
+                return;
+            }
+
+            try {
+                // Get Tutor Profile
+                const resProfile = await fetch('http://localhost:3000/api/tutores/me', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (resProfile.ok) {
+                    const profile = await resProfile.json();
+                    
+                    // Actualizar nombres en el header
+                    const fullName = `${profile.user.firstName} ${profile.user.lastName}`;
+                    document.getElementById('tutor-name-header').textContent = fullName;
+                    document.getElementById('tutor-subjects-header').textContent = `Profesor de ${profile.subjects || 'Varias materias'}`;
+                    const storedUser = { ...getStoredUser(), ...profile.user, role: 'TUTOR', tutorProfileId: profile.id, subjects: profile.subjects };
+                    localStorage.setItem('user', JSON.stringify(storedUser));
+                    const avatar = document.getElementById('tutor-avatar');
+                    if (avatar) {
+                        avatar.style.backgroundImage = `url("${getUserProfileImage(storedUser)}")`;
+                        avatar.onclick = () => { window.location.href = `tutor_profile.html?id=${profile.id}`; };
+                    }
+                    const shareInput = document.getElementById('share-url');
+                    if (shareInput) {
+                        shareInput.value = `${window.location.origin}${window.location.pathname.replace(/\/src\/pages\/[^/]+$/, '/src/pages/tutor_profile.html')}?id=${encodeURIComponent(profile.id)}`;
+                    }
+
+                    // Actualizar saldo
+                    tutorCurrentBalance = Number(profile.balance || 0);
+                    const formattedBalance = formatCOP(profile.balance);
+                    document.getElementById('total-balance').textContent = formattedBalance;
+                    document.getElementById('available-balance').textContent = formattedBalance;
+                    document.getElementById('payout-balance').textContent = formattedBalance;
+                    const payoutLabel = document.getElementById('payout-request-label');
+                    if (payoutLabel) payoutLabel.textContent = 'Próximamente';
+
+                    // Actualizar reseñas
+                    tutorReviewCount = (profile.reviews || []).length;
+                    updateReputation(profile.reviews || []);
+                    if (profile.reviews && profile.reviews.length > 0) {
+                        document.getElementById('reviews-list').innerHTML = profile.reviews.map(r => `
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-2">
+                                <div class="size-6 rounded-full bg-primary/20 flex items-center justify-center text-primary text-xs font-bold">${r.student?.firstName?.[0] || 'U'}</div>
+                                <span class="text-xs font-bold">${r.student?.firstName || 'Usuario'} ${r.student?.lastName || ''}</span>
+                                <div class="flex text-amber-400 scale-75 origin-left">${'<span class="material-symbols-outlined text-xs fill-1">star</span>'.repeat(r.rating)}</div>
+                            </div>
+                            <p class="text-xs text-slate-600 dark:text-slate-400 italic leading-relaxed">"${r.comment}"</p>
+                        </div>
+                        `).join('<hr class="border-slate-100 dark:border-slate-800"/>');
+                    } else {
+                        document.getElementById('reviews-list').innerHTML = '<p class="text-xs text-slate-500">Aún no hay reseñas.</p>';
+                    }
+                }
+
+                // Get Appointments
+                const resApps = await fetch('http://localhost:3000/api/appointments', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (resApps.ok) {
+                    const allApps = await resApps.json();
+                    tutorAppointments = allApps;
+                    pendingRequests = allApps.filter(a => a.status === 'PENDING');
+                    updateTeachingStats(allApps);
+                    renderRequests();
+                    renderCalendar();
+                }
+            } catch (err) {
+                console.error("Error loading dashboard data:", err);
+            }
+        }
 
         function renderRequests() {
             const list = document.getElementById('requests-list');
             const count = document.getElementById('req-count');
+            if (!list || !count) return;
             count.textContent = `${pendingRequests.length} NEW`;
             if (pendingRequests.length === 0) {
-                list.innerHTML = `<div class="text-center py-8 text-slate-400"><span class="material-symbols-outlined text-4xl mb-2 block">inbox</span><p class="text-xs">Sin solicitudes pendientes</p></div>`;
+                list.innerHTML = `<div class="text-center py-8 text-slate-400"><span class="material-symbols-outlined text-4xl mb-2 block">inbox</span><p class="text-xs">Sin sesiones pendientes</p></div>`;
                 return;
             }
             list.innerHTML = pendingRequests.map((req, i) => `
-            <div class="p-4 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30 space-y-3" id="req-${i}">
+            <div class="p-4 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30 space-y-3" id="req-${req.id}">
                 <div class="flex items-start gap-3">
-                    <div class="size-10 rounded-lg bg-cover bg-center ${req.img ? '' : 'bg-slate-200 flex items-center justify-center'}" style="${req.img ? `background-image: url('${req.img}')` : ''}">
-                        ${!req.img ? '<span class="material-symbols-outlined text-slate-500">person</span>' : ''}
+                    <div class="size-10 rounded-lg bg-cover bg-center bg-slate-200 flex items-center justify-center text-primary font-bold">
+                        ${req.student?.firstName?.[0] || 'E'}
                     </div>
                     <div class="flex-1 min-w-0">
-                        <p class="text-xs font-bold truncate">${req.name}</p>
-                        <p class="text-[10px] text-primary font-bold">${req.subject}</p>
+                        <p class="text-xs font-bold truncate">${req.student?.firstName || 'Estudiante'} ${req.student?.lastName || ''}</p>
+                        <p class="text-[10px] text-primary font-bold">Sesión Agendada</p>
                         <p class="text-[10px] text-slate-500 flex items-center gap-1 mt-1">
                             <span class="material-symbols-outlined text-xs">calendar_today</span>
-                            ${req.date}
+                            ${new Date(req.date).toLocaleString()}
                         </p>
+                        <p class="text-[10px] font-bold text-green-600 mt-1">$${req.totalPrice.toLocaleString()} COP</p>
                     </div>
                 </div>
-                <div class="grid grid-cols-2 gap-2">
-                    <button onclick="declineRequest(${i})" class="py-1.5 text-[10px] font-bold border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors">Rechazar</button>
-                    <button onclick="acceptRequest(${i})" class="py-1.5 text-[10px] font-bold bg-primary text-white rounded-lg hover:brightness-110 shadow-sm transition-all">Aceptar</button>
+                <div class="grid grid-cols-1 gap-2 mt-2">
+                    <button onclick="completeSession('${req.id}')" class="py-1.5 text-[10px] font-bold bg-primary text-white rounded-lg hover:brightness-110 shadow-sm transition-all">Completar Sesión</button>
                 </div>
             </div>
         `).join('');
         }
 
-        function acceptRequest(i) {
-            const req = pendingRequests[i];
-            showToast(`Sesión aceptada con ${req.name} for ${req.subject}!`, 'check_circle');
-            pendingRequests.splice(i, 1);
-            renderRequests();
+        function getAppointmentsForDay(day) {
+            return tutorAppointments.filter(app => {
+                const date = new Date(app.date);
+                return date.getFullYear() === viewDate.getFullYear()
+                    && date.getMonth() === viewDate.getMonth()
+                    && date.getDate() === day;
+            });
         }
 
-        function declineRequest(i) {
-            const req = pendingRequests[i];
-            showToast(`Solicitud de ${req.name} rechazada.`, 'cancel');
-            pendingRequests.splice(i, 1);
-            renderRequests();
+        function updateReputation(reviews) {
+            const count = reviews.length;
+            const average = count ? reviews.reduce((sum, review) => sum + review.rating, 0) / count : 0;
+            document.getElementById('rep-score').textContent = average ? average.toFixed(1) : '0.0';
+            document.getElementById('rep-reviews-count').textContent = `Basado en ${count} reseña${count === 1 ? '' : 's'}`;
+            [5, 4, 3].forEach(rating => {
+                const ratingCount = reviews.filter(review => review.rating === rating).length;
+                const percent = count ? Math.round((ratingCount / count) * 100) : 0;
+                document.getElementById(`rep-bar-${rating}`).style.width = `${percent}%`;
+                document.getElementById(`rep-percent-${rating}`).textContent = `${percent}%`;
+            });
         }
 
-        renderRequests();
+        function updateTeachingStats(appointments) {
+            const completed = appointments.filter(app => app.status === 'COMPLETED');
+            const hours = completed.reduce((sum, app) => sum + (Number(app.durationMinutes || 60) / 60), 0);
+            tutorHoursTaught = hours;
+            document.getElementById('hours-taught').textContent = `${hours.toFixed(hours % 1 ? 1 : 0)} hrs`;
+        }
+
+        async function completeSession(id) {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+            try {
+                const res = await fetch(`http://localhost:3000/api/appointments/${id}/complete`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    showToast('Sesión completada y pago añadido!', 'check_circle');
+                    loadProfileAndRequests();
+                } else {
+                    const data = await res.json();
+                    showToast(data.error || 'Error al completar', 'error');
+                }
+            } catch (err) {
+                showToast('Error de conexión', 'error');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadProfileAndRequests);
 
         // --- Estudiantes Logic ---
-        const studentsData = [
-            { id: 1, name: 'Alice Smith', subject: 'Matemáticas' },
-            { id: 2, name: 'Bob Jones', subject: 'Física' }
-        ];
-        
         function renderStudents() {
             const tbody = document.getElementById('students-tbody');
             if (!tbody) return;
+            const studentsById = new Map();
+            tutorAppointments.forEach(app => {
+                if (!app.studentId || !app.student) return;
+                studentsById.set(app.studentId, {
+                    id: app.studentId,
+                    name: `${app.student.firstName || 'Estudiante'} ${app.student.lastName || ''}`.trim(),
+                    subject: app.subject || getStoredUser().subjects || 'Tutoría'
+                });
+            });
+            const studentsData = Array.from(studentsById.values());
             tbody.innerHTML = studentsData.map(s => `
                 <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                     <td class="p-4 font-bold">${s.name}</td>
                     <td class="p-4 text-slate-500">${s.subject}</td>
                     <td class="p-4 text-right">
-                        <button onclick="viewStudent(${s.id})" class="text-primary hover:underline text-sm font-bold mr-2">Ver</button>
-                        <button onclick="deleteStudent(${s.id})" class="text-red-500 hover:underline text-sm font-bold">Eliminar</button>
+                        <button onclick="viewStudent('${s.id}')" class="text-primary hover:underline text-sm font-bold mr-2">Ver</button>
                     </td>
                 </tr>
             `).join('');
@@ -317,24 +457,16 @@
             showToast('Mostrando info del estudiante ' + id, 'person');
         }
         
-        function deleteStudent(id) {
-            const idx = studentsData.findIndex(s => s.id === id);
-            if(idx > -1) {
-                studentsData.splice(idx, 1);
-                renderStudents();
-                showToast('Estudiante eliminado', 'delete');
-            }
-        }
-
         // --- Materiales Logic ---
-        const materialsData = [
-            { id: 1, title: 'Guía de Álgebra', type: 'PDF' },
-            { id: 2, title: 'Ejercicios de Cálculo', type: 'DOCX' }
-        ];
+        let materialsData = JSON.parse(localStorage.getItem('tutorMaterials') || '[]');
 
         function renderMaterials() {
             const grid = document.getElementById('materials-grid');
             if (!grid) return;
+            if (materialsData.length === 0) {
+                grid.innerHTML = '<div class="md:col-span-2 lg:col-span-3 p-8 text-center text-slate-500 bg-white dark:bg-slate-900 border border-dashed border-slate-200 dark:border-slate-800 rounded-xl">No hay materiales creados todavía.</div>';
+                return;
+            }
             grid.innerHTML = materialsData.map(m => `
                 <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-sm flex flex-col justify-between">
                     <div>
@@ -354,6 +486,7 @@
 
         function addMaterial() {
             materialsData.push({ id: Date.now(), title: 'Nuevo Material', type: 'PDF' });
+            localStorage.setItem('tutorMaterials', JSON.stringify(materialsData));
             renderMaterials();
             showToast('Material añadido', 'add_circle');
         }
@@ -366,6 +499,7 @@
             const idx = materialsData.findIndex(m => m.id === id);
             if(idx > -1) {
                 materialsData.splice(idx, 1);
+                localStorage.setItem('tutorMaterials', JSON.stringify(materialsData));
                 renderMaterials();
                 showToast('Material eliminado', 'delete');
             }

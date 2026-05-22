@@ -71,3 +71,11 @@ body {
         #share-modal.active {
             display: flex;
         }
+
+        #settings-modal {
+            display: none;
+        }
+
+        #settings-modal.active {
+            display: flex;
+        }

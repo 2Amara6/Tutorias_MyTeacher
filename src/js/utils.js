@@ -42,3 +42,52 @@ function showToast(msg, icon = "check_circle") {
     toast.classList.add("show");
     toastTimer = setTimeout(() => toast.classList.remove("show"), 3000);
 }
+
+// --- SESSION HELPERS ---
+const DEFAULT_PROFILE_IMAGE = "https://ui-avatars.com/api/?name=TutorMaster&background=137fec&color=fff";
+
+function getStoredUser() {
+    try {
+        return JSON.parse(localStorage.getItem("user") || "{}");
+    } catch (error) {
+        return {};
+    }
+}
+
+function getUserDisplayName(user = getStoredUser()) {
+    return [user.firstName, user.lastName].filter(Boolean).join(" ") || user.email || "Usuario";
+}
+
+function getUserInitials(user = getStoredUser()) {
+    const source = getUserDisplayName(user);
+    return source
+        .split(/\s+/)
+        .filter(Boolean)
+        .slice(0, 2)
+        .map(part => part[0]?.toUpperCase())
+        .join("") || "TM";
+}
+
+function getUserProfileImage(user = getStoredUser()) {
+    const name = encodeURIComponent(getUserDisplayName(user));
+    return user.profileImage || `https://ui-avatars.com/api/?name=${name}&background=137fec&color=fff`;
+}
+
+function getUserHome(user = getStoredUser()) {
+    return user.role === "TUTOR" ? "tutor_management_availability.html" : "perfil_estudiante.html";
+}
+
+function logout() {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    window.location.href = "tutor_home.html";
+}
+
+function escapeHTML(value = "") {
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}

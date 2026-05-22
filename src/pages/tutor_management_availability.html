@@ -31,6 +31,37 @@
       <span id="toast-msg">Done!</span>
     </div>
 
+    <!-- Settings Modal -->
+    <div
+      id="settings-modal"
+      class="fixed inset-0 z-50 items-center justify-center bg-black/50 backdrop-blur-sm"
+    >
+      <div
+        class="bg-white dark:bg-slate-900 rounded-2xl p-8 w-full max-w-md shadow-2xl border border-slate-200 dark:border-slate-800 mx-4"
+      >
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="text-lg font-bold">Configuración de Cuenta</h3>
+          <button onclick="closeSettings()" class="text-slate-400 hover:text-slate-700">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+        <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-4 flex items-center gap-3">
+          <img id="settings-user-image" alt="Perfil" class="size-12 rounded-full object-cover" />
+          <div class="min-w-0">
+            <p id="settings-user-name" class="font-bold truncate">Tutor</p>
+            <p id="settings-user-email" class="text-xs text-slate-500 truncate">Cuenta activa</p>
+          </div>
+        </div>
+        <button
+          onclick="logout()"
+          class="w-full mt-6 py-3 bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-300 font-bold rounded-xl hover:bg-red-100 dark:hover:bg-red-900/30 flex items-center justify-center gap-2"
+        >
+          <span class="material-symbols-outlined">logout</span>
+          Cerrar sesión
+        </button>
+      </div>
+    </div>
+
     <!-- Payout Modal -->
     <div
       id="payout-modal"
@@ -53,7 +84,7 @@
         >
           <div class="flex justify-between">
             <span class="text-slate-500">Saldo Disponible</span
-            ><span class="font-bold text-green-600">$4.250.000 COP</span>
+            ><span class="font-bold text-green-600" id="available-balance">$0 COP</span>
           </div>
           <div class="flex justify-between">
             <span class="text-slate-500">Comisión</span
@@ -63,20 +94,19 @@
             class="flex justify-between border-t border-slate-200 dark:border-slate-700 pt-2"
           >
             <span class="font-bold">Recibirás</span
-            ><span class="font-bold text-primary">$4.250.000 COP</span>
+            ><span class="font-bold text-primary" id="payout-balance">$0 COP</span>
           </div>
         </div>
         <div class="mb-4">
           <label class="text-xs font-bold text-slate-500 uppercase mb-1 block"
             >Método de Pago</label
           >
-          <select
-            class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm focus:ring-2 focus:ring-primary outline-none"
+          <div
+            class="w-full px-4 py-3 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm text-slate-500 flex items-center gap-2"
           >
-            <option>Cuenta Bancaria (••4521)</option>
-            <option>PayPal (andres@email.com)</option>
-            <option>Stripe (instantáneo)</option>
-          </select>
+            <span class="material-symbols-outlined text-primary">schedule</span>
+            Próximamente
+          </div>
         </div>
         <div class="flex gap-3">
           <button
@@ -90,7 +120,7 @@
             class="flex-1 py-3 bg-primary text-white rounded-xl font-bold text-sm flex items-center justify-center gap-2"
           >
             <span class="material-symbols-outlined text-lg">payments</span>
-            Solicitar $4.250.000 COP
+            <span id="payout-request-label">Próximamente</span>
           </button>
         </div>
       </div>
@@ -114,8 +144,7 @@
           </button>
         </div>
         <p class="text-sm text-slate-500 mb-4">
-          Share your booking link with potential students on social platforms or
-          direct message.
+          Comparte tu enlace de reserva con estudiantes.
         </p>
         <div
           class="bg-slate-50 dark:bg-slate-800 rounded-xl flex items-center gap-2 px-4 py-3 mb-4"
@@ -123,7 +152,7 @@
           <input
             id="share-url"
             readonly
-            value="tutorhub.pro/andresCastilla"
+            value=""
             class="flex-1 bg-transparent border-none focus:ring-0 text-sm text-slate-700 dark:text-slate-300 outline-none"
           />
           <button
@@ -195,6 +224,12 @@
               class="text-sm font-medium text-slate-500 hover:text-primary transition-colors py-1 cursor-pointer"
               >Materiales</a
             >
+            <a
+              id="nav-messages"
+              href="mensajes.html?mode=tutor"
+              class="text-sm font-medium text-slate-500 hover:text-primary transition-colors py-1 cursor-pointer"
+              >Mensajes</a
+            >
           </div>
         </div>
         <div class="flex items-center gap-4">
@@ -230,18 +265,23 @@
             class="flex items-center gap-3 pl-4 border-l border-slate-200 dark:border-slate-700"
           >
             <div class="text-right hidden sm:block">
-              <p class="text-xs font-bold leading-tight">Sarah Jenkins</p>
-              <p class="text-[10px] text-slate-500 uppercase font-medium">
-                Profesora de Matemáticas e ingles
+              <p class="text-xs font-bold leading-tight" id="tutor-name-header">Cargando...</p>
+              <p class="text-[10px] text-slate-500 uppercase font-medium" id="tutor-subjects-header">
+                Tutor
               </p>
             </div>
             <div
+              id="tutor-avatar"
               class="size-9 rounded-full bg-cover bg-center border-2 border-primary/20 cursor-pointer hover:border-primary transition-colors"
               onclick="window.location.href = 'tutor_profile.html'"
-              style="
-                background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuBFM9uJFRzShDrkztGDRdisHG_YsaFa0AOkVbGMa9MymUdBtb472xdhjltkpBZa856il_VfCKh-US3Z6VJhFSlZHh1BxI2YonUrYFgcW-uo_D9unh4SHb7PPGcC2di_VAWzL8-otj35HSFtnTioVdBjA5Jsz9W7iBYUwj7M6qCMkmhIq-pjzy4jevmBNYnCnXfu5La7UMQSXtg8NPtOUun9WjlVBqYZXsHDNvZBQRfgXgPXNdWPrM6gJXD4DWRW-gJHrVp0syIfUFg&quot;);
-              "
             ></div>
+            <button
+              onclick="openSettings()"
+              class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-primary transition-colors"
+              title="Configuración"
+            >
+              <span class="material-symbols-outlined">settings</span>
+            </button>
           </div>
         </div>
       </header>
@@ -264,7 +304,7 @@
                 class="bg-background-light dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700"
               >
                 <div class="flex items-center justify-between mb-4">
-                  <div class="text-4xl font-black" id="rep-score">4.9</div>
+                  <div class="text-4xl font-black" id="rep-score">0.0</div>
                   <div class="flex flex-col items-end">
                     <div class="flex text-amber-400">
                       <span class="material-symbols-outlined text-lg fill-1"
@@ -283,8 +323,8 @@
                         >star_half</span
                       >
                     </div>
-                    <p class="text-[11px] font-medium text-slate-500">
-                      Basado en 84 reseñas
+                    <p class="text-[11px] font-medium text-slate-500" id="rep-reviews-count">
+                      Basado en 0 reseñas
                     </p>
                   </div>
                 </div>
@@ -296,10 +336,11 @@
                     >
                       <div
                         class="h-full bg-primary rounded-full"
-                        style="width: 85%"
+                        id="rep-bar-5"
+                        style="width: 0%"
                       ></div>
                     </div>
-                    <span class="text-slate-400">85%</span>
+                    <span class="text-slate-400" id="rep-percent-5">0%</span>
                   </div>
                   <div class="flex items-center gap-3 text-xs">
                     <span class="w-2 font-bold">4</span>
@@ -308,10 +349,11 @@
                     >
                       <div
                         class="h-full bg-primary rounded-full"
-                        style="width: 12%"
+                        id="rep-bar-4"
+                        style="width: 0%"
                       ></div>
                     </div>
-                    <span class="text-slate-400">12%</span>
+                    <span class="text-slate-400" id="rep-percent-4">0%</span>
                   </div>
                   <div class="flex items-center gap-3 text-xs">
                     <span class="w-2 font-bold">3</span>
@@ -320,10 +362,11 @@
                     >
                       <div
                         class="h-full bg-primary rounded-full"
-                        style="width: 3%"
+                        id="rep-bar-3"
+                        style="width: 0%"
                       ></div>
                     </div>
-                    <span class="text-slate-400">3%</span>
+                    <span class="text-slate-400" id="rep-percent-3">0%</span>
                   </div>
                 </div>
               </div>
@@ -339,35 +382,25 @@
               <div class="space-y-3">
                 <div
                   class="p-4 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-primary/50 transition-colors cursor-pointer"
-                  onclick="
-                    showToast(
-                      'Total balance: $4.250.000 COP (+12.4% this month)',
-                      'trending_up',
-                    )
-                  "
+                  onclick="showCurrentBalance()"
                 >
                   <p class="text-xs font-medium text-slate-500 mb-1">
                     Saldo Total
                   </p>
                   <div class="flex items-end justify-between">
-                    <h4 class="text-2xl font-bold">$4.250.000 COP</h4>
-                    <span
-                      class="text-[10px] font-bold text-green-600 bg-green-100 px-1.5 py-0.5 rounded-lg"
-                      >+12.4%</span
-                    >
+                    <h4 class="text-2xl font-bold" id="total-balance">$0 COP</h4>
+                    <span class="text-[10px] font-bold text-slate-400">Actual</span>
                   </div>
                 </div>
                 <div
                   class="p-4 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer hover:border-primary/50 transition-colors"
-                  onclick="
-                    showToast('128,5 horas enseñadas este mes', 'schedule')
-                  "
+                  onclick="showHoursTaught()"
                 >
                   <p class="text-xs font-medium text-slate-500 mb-1">
                     Horas Enseñadas
                   </p>
                   <div class="flex items-end justify-between">
-                    <h4 class="text-xl font-bold">128.5 hrs</h4>
+                    <h4 class="text-xl font-bold" id="hours-taught">0 hrs</h4>
                     <span class="material-symbols-outlined text-slate-400"
                       >history</span
                     >
@@ -392,7 +425,7 @@
                   Últimas Reseñas
                 </h3>
                 <a
-                  onclick="showToast('¡84 reseñas cargadas!', 'star')"
+                  onclick="showReviewCount()"
                   class="text-[10px] font-bold text-primary hover:underline cursor-pointer"
                   >VER TODAS</a
                 >
@@ -606,60 +639,6 @@
             </div>
           </div>
         </section>
-
-        <!-- Right Sidebar: Pending Requests -->
-        <aside
-          class="w-80 border-l border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col"
-        >
-          <div class="p-6 flex flex-col h-full">
-            <div class="flex items-center justify-between mb-6">
-              <h3 class="text-sm font-bold tracking-tight">
-                Solicitudes Pendientes
-              </h3>
-              <span
-                class="bg-primary/10 text-primary text-[10px] font-black px-2 py-0.5 rounded-full"
-                id="req-count"
-                >3 NEW</span
-              >
-            </div>
-            <div
-              class="flex-1 overflow-y-auto custom-scrollbar space-y-4 pr-1"
-              id="requests-list"
-            >
-              <!-- Rendered by JS -->
-            </div>
-            <div class="mt-auto pt-6">
-              <div class="bg-primary/5 rounded-xl p-4 border border-primary/10">
-                <p
-                  class="text-[11px] font-bold text-primary mb-2 flex items-center gap-1"
-                >
-                  <span class="material-symbols-outlined text-sm">share</span>
-                  Share Profile
-                </p>
-                <p class="text-[10px] text-slate-500 mb-3 leading-tight">
-                  Copy your unique booking link to share on social media or with
-                  potential students.
-                </p>
-                <div class="flex gap-2">
-                  <input
-                    class="flex-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-[10px] py-1 px-2 focus:ring-0 outline-none"
-                    readonly
-                    type="text"
-                    value="tutorhub.pro/andresCastilla"
-                  />
-                  <button
-                    onclick="openShareModal()"
-                    class="p-1.5 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
-                  >
-                    <span class="material-symbols-outlined text-xs"
-                      >content_copy</span
-                    >
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </aside>
       </main>
     </div>
 

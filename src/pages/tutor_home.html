@@ -35,73 +35,85 @@
       <span id="toast-msg">Acción completada!</span>
     </div>
 
-    <!-- Modal: Login -->
-    <div
-      id="modal"
-      class="fixed inset-0 z-50 items-center justify-center bg-black/50 backdrop-blur-sm"
-    >
-      <div
-        class="bg-white dark:bg-slate-900 rounded-2xl p-8 w-full max-w-md shadow-2xl border border-slate-200 dark:border-slate-800 mx-4"
-      >
+    <!-- Modal: Login / Register -->
+    <div id="modal" class="fixed inset-0 z-50 items-center justify-center bg-black/50 backdrop-blur-sm hidden">
+      <div class="bg-white dark:bg-slate-900 rounded-2xl p-8 w-full max-w-md shadow-2xl border border-slate-200 dark:border-slate-800 mx-4 max-h-[90vh] overflow-y-auto">
         <div class="flex items-center justify-between mb-6">
           <div class="flex items-center gap-2 text-primary">
             <span class="material-symbols-outlined text-2xl">school</span>
             <h2 class="text-xl font-bold">TutorMaster</h2>
           </div>
-          <button
-            onclick="closeModal()"
-            class="text-slate-400 hover:text-slate-700 dark:hover:text-white"
-          >
+          <button onclick="closeModal()" class="text-slate-400 hover:text-slate-700 dark:hover:text-white">
             <span class="material-symbols-outlined">close</span>
           </button>
         </div>
-        <h3 class="text-2xl font-bold mb-2">Bienvenido de nuevo</h3>
-        <p class="text-slate-500 text-sm mb-6">
-          Inicia sesión para acceder a tu cuenta
-        </p>
-        <form onsubmit="handleLogin(event)" class="space-y-4">
-          <div>
-            <label
-              class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 block"
-              >Correo electrónico</label
-            >
-            <input
-              type="email"
-              id="login-email"
-              placeholder="tu@correo.com"
-              required
-              class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-transparent text-sm outline-none"
-            />
-          </div>
-          <div>
-            <label
-              class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 block"
-              >Contraseña</label
-            >
-            <input
-              type="password"
-              id="login-password"
-              placeholder="••••••••"
-              required
-              class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-transparent text-sm outline-none"
-            />
-          </div>
-          <button
-            type="submit"
-            class="w-full py-3 bg-primary text-white font-bold rounded-lg hover:bg-primary/90 transition-colors"
-          >
-            Iniciar sesión
-          </button>
-        </form>
-        <p class="text-center text-sm text-slate-500 mt-4">
-          ¿No tienes cuenta?
-          <a
-            href="#"
-            onclick="showToast('Redirigiendo al registro...', 'person_add')"
-            class="text-primary font-semibold hover:underline"
-            >Regístrate gratis</a
-          >
-        </p>
+        
+        <!-- Tabs -->
+        <div class="flex border-b border-slate-200 dark:border-slate-700 mb-6">
+          <button onclick="toggleAuthTab('login')" id="tab-btn-login" class="flex-1 py-2 text-sm font-bold border-b-2 border-primary text-primary">Iniciar Sesión</button>
+          <button onclick="toggleAuthTab('register')" id="tab-btn-register" class="flex-1 py-2 text-sm font-bold text-slate-500 hover:text-primary">Registrarse</button>
+        </div>
+
+        <!-- Login Form -->
+        <div id="form-login" class="block">
+            <h3 class="text-2xl font-bold mb-2">Bienvenido de nuevo</h3>
+            <p class="text-slate-500 text-sm mb-6">Inicia sesión para acceder a tu cuenta</p>
+            <form onsubmit="handleLogin(event)" class="space-y-4">
+              <div>
+                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 block">Correo electrónico</label>
+                <input type="email" id="login-email" placeholder="tu@correo.com" required class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-transparent text-sm outline-none" />
+              </div>
+              <div>
+                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 block">Contraseña</label>
+                <input type="password" id="login-password" placeholder="••••••••" required class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-transparent text-sm outline-none" />
+              </div>
+              <button type="submit" class="w-full py-3 bg-primary text-white font-bold rounded-lg hover:bg-primary/90 transition-colors">Iniciar sesión</button>
+            </form>
+        </div>
+
+        <!-- Register Form -->
+        <div id="form-register" class="hidden">
+            <h3 class="text-2xl font-bold mb-2">Crea tu cuenta</h3>
+            <p class="text-slate-500 text-sm mb-6">Únete a TutorMaster hoy</p>
+            <form onsubmit="handleRegister(event)" class="space-y-4">
+              <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <label class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 block">Nombre</label>
+                    <input type="text" id="reg-firstname" required class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-transparent text-sm outline-none" />
+                  </div>
+                  <div>
+                    <label class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 block">Apellido</label>
+                    <input type="text" id="reg-lastname" required class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-transparent text-sm outline-none" />
+                  </div>
+              </div>
+              <div>
+                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 block">Correo</label>
+                <input type="email" id="reg-email" required class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-transparent text-sm outline-none" />
+              </div>
+              <div>
+                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 block">Contraseña</label>
+                <input type="password" id="reg-password" required class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-transparent text-sm outline-none" />
+              </div>
+              <div>
+                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 block">Tipo de cuenta</label>
+                <select id="reg-role" onchange="toggleTutorFields()" required class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-transparent text-sm outline-none">
+                    <option value="STUDENT">Estudiante</option>
+                    <option value="TUTOR">Tutor</option>
+                </select>
+              </div>
+              <div id="tutor-fields" class="hidden space-y-4">
+                  <div>
+                    <label class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 block">Tarifa por hora ($)</label>
+                    <input type="number" id="reg-rate" placeholder="Ej. 50000" class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-transparent text-sm outline-none" />
+                  </div>
+                  <div>
+                    <label class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 block">Materias (separadas por coma)</label>
+                    <input type="text" id="reg-subjects" placeholder="Ej. Matemáticas, Física" class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-transparent text-sm outline-none" />
+                  </div>
+              </div>
+              <button type="submit" class="w-full py-3 bg-primary text-white font-bold rounded-lg hover:bg-primary/90 transition-colors">Registrarse</button>
+            </form>
+        </div>
       </div>
     </div>
 
@@ -156,19 +168,21 @@
               >dark_mode</span
             >
           </button>
+          <div id="guest-actions" class="flex items-center gap-4">
           <button
             onclick="openModal()"
             class="hidden sm:block text-sm font-semibold text-slate-600 dark:text-slate-400 hover:text-primary transition-colors"
           >
             Iniciar Sesión
           </button>
+          </div>
           <button
-            onclick="
-              window.location.href = 'tutor_management_availability.html'
-            "
-            class="rounded-lg bg-primary px-5 py-2.5 text-sm font-bold text-white shadow-md shadow-primary/20 hover:bg-primary/90 transition-all"
+            id="session-actions"
+            onclick="window.location.href = getUserHome()"
+            class="hidden items-center gap-3 rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 py-1 pl-3 pr-1.5 hover:border-primary transition-colors"
           >
-            Ser Tutor
+            <span id="session-user-name" class="max-w-32 truncate text-sm font-bold text-slate-700 dark:text-slate-200"></span>
+            <img id="session-user-image" alt="Perfil" class="size-9 rounded-full object-cover" />
           </button>
         </div>
       </div>
@@ -332,246 +346,7 @@
             class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
             id="tutor-grid"
           >
-            <!-- Tutor Card 1 -->
-            <div
-              class="group relative rounded-2xl border border-slate-100 bg-white p-6 transition-all hover:shadow-xl hover:-translate-y-1 dark:border-slate-800 dark:bg-slate-800/50 cursor-pointer"
-              onclick="window.location.href = 'tutor_profile.html?id=sarah'"
-            >
-              <div class="mb-4 flex items-start justify-between">
-                <div class="relative">
-                  <img
-                    alt="Sarah Jenkins"
-                    class="shrink-0 h-16 w-16 rounded-full object-cover ring-2 ring-primary/20"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFM9uJFRzShDrkztGDRdisHG_YsaFa0AOkVbGMa9MymUdBtb472xdhjltkpBZa856il_VfCKh-US3Z6VJhFSlZHh1BxI2YonUrYFgcW-uo_D9unh4SHb7PPGcC2di_VAWzL8-otj35HSFtnTioVdBjA5Jsz9W7iBYUwj7M6qCMkmhIq-pjzy4jevmBNYnCnXfu5La7UMQSXtg8NPtOUun9WjlVBqYZXsHDNvZBQRfgXgPXNdWPrM6gJXD4DWRW-gJHrVp0syIfUFg"
-                  />
-                  <div
-                    class="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-white text-[10px] border-2 border-white dark:border-slate-800"
-                  >
-                    <span class="material-symbols-outlined text-[14px]"
-                      >verified</span
-                    >
-                  </div>
-                </div>
-                <div class="text-right">
-                  <div class="text-lg font-bold text-primary">
-                    $45.000 COP<span class="text-xs font-normal text-slate-500"
-                      >/hr</span
-                    >
-                  </div>
-                  <div class="flex items-center gap-1 text-amber-500">
-                    <span class="material-symbols-outlined text-sm">star</span>
-                    <span class="text-xs font-bold">4.9 (124)</span>
-                  </div>
-                </div>
-              </div>
-              <h3 class="mb-1 text-lg font-bold text-slate-900 dark:text-white">
-                Sarah Jenkins
-              </h3>
-              <p
-                class="mb-4 text-xs font-medium text-slate-500 uppercase tracking-wide"
-              >
-                Matemáticas &amp; Física
-              </p>
-              <div class="mb-6 flex flex-wrap gap-2">
-                <span
-                  class="rounded-full bg-slate-100 px-3 py-1 text-[10px] font-bold text-slate-600 dark:bg-slate-700 dark:text-slate-300"
-                  >CÁLCULO</span
-                >
-                <span
-                  class="rounded-full bg-slate-100 px-3 py-1 text-[10px] font-bold text-slate-600 dark:bg-slate-700 dark:text-slate-300"
-                  >ÁLGEBRA</span
-                >
-              </div>
-              <button
-                onclick="
-                  event.stopPropagation();
-                  window.location.href = 'tutor_profile.html?id=sarah';
-                "
-                class="w-full rounded-lg bg-primary/10 py-2.5 text-sm font-bold text-primary hover:bg-primary hover:text-white transition-all"
-              >
-                Ver Perfil
-              </button>
-            </div>
-            <!-- Tutor Card 2 -->
-            <div
-              class="group relative rounded-2xl border border-slate-100 bg-white p-6 transition-all hover:shadow-xl hover:-translate-y-1 dark:border-slate-800 dark:bg-slate-800/50 cursor-pointer"
-              onclick="window.location.href = 'tutor_profile.html?id=david'"
-            >
-              <div class="mb-4 flex items-start justify-between">
-                <div class="relative">
-                  <img
-                    alt=""
-                    class="shrink-0 h-16 w-16 rounded-full object-cover ring-2 ring-primary/20"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCttohCMfgWsIZ0MfHZLkFqjElOISFWncW0S2kZuU4LlfLi07yNLTMtrVC44I89LV1KcBlu-kvj_3aqjp5SEx_iGO9OJ3rODk4vpsYuZNQEUCsozkcfjV7Zu_GIw3VprEck8mavbsPMsVKJPwqc5Zm9VpnkReEMRHSrzR33TgIJJADneg6jK8LSOZ3G2M09d3hqd7WRoYPgtoVEx1-ZP0tL6jsdkwsFG7YS3_X6QaBdEeWhBT_1qNYp8gF4_q__G4BxmmMT1_LvTug"
-                  />
-                  <div
-                    class="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-white text-[10px] border-2 border-white dark:border-slate-800"
-                  >
-                    <span class="material-symbols-outlined text-[14px]"
-                      >verified</span
-                    >
-                  </div>
-                </div>
-                <div class="text-right">
-                  <div class="text-lg font-bold text-primary">
-                    $60.000 COP<span class="text-xs font-normal text-slate-500"
-                      >/hr</span
-                    >
-                  </div>
-                  <div class="flex items-center gap-1 text-amber-500">
-                    <span class="material-symbols-outlined text-sm">star</span>
-                    <span class="text-xs font-bold">5.0 (89)</span>
-                  </div>
-                </div>
-              </div>
-              <h3 class="mb-1 text-lg font-bold text-slate-900 dark:text-white">
-                David Chen
-              </h3>
-              <p
-                class="mb-4 text-xs font-medium text-slate-500 uppercase tracking-wide"
-              >
-                Informática
-              </p>
-              <div class="mb-6 flex flex-wrap gap-2">
-                <span
-                  class="rounded-full bg-slate-100 px-3 py-1 text-[10px] font-bold text-slate-600 dark:bg-slate-700 dark:text-slate-300"
-                  >PYTHON</span
-                >
-                <span
-                  class="rounded-full bg-slate-100 px-3 py-1 text-[10px] font-bold text-slate-600 dark:bg-slate-700 dark:text-slate-300"
-                  >ESTRUCTURAS DE DATOS</span
-                >
-              </div>
-              <button
-                onclick="
-                  event.stopPropagation();
-                  window.location.href = 'tutor_profile.html?id=david';
-                "
-                class="w-full rounded-lg bg-primary/10 py-2.5 text-sm font-bold text-primary hover:bg-primary hover:text-white transition-all"
-              >
-                Ver Perfil
-              </button>
-            </div>
-            <!-- Tutor Card 3 -->
-            <div
-              class="group relative rounded-2xl border border-slate-100 bg-white p-6 transition-all hover:shadow-xl hover:-translate-y-1 dark:border-slate-800 dark:bg-slate-800/50 cursor-pointer"
-              onclick="window.location.href = 'tutor_profile.html?id=elena'"
-            >
-              <div class="mb-4 flex items-start justify-between">
-                <div class="relative">
-                  <img
-                    alt=""
-                    class="shrink-0 h-16 w-16 rounded-full object-cover ring-2 ring-primary/20"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuB_QpX42UzxMpr9ZVEkek1mLf6pZzXMGtav81ftYAdMXR63lxTu5ICgSt_OxCnJwaoynm5aQbaHRAVJ_FUGJOU04SbKdnwvCwMeNBuYn07e-TMdI31ABiFssJBVgGcEd35yEbkBGed2d7YWG50H-zihuL9I4L1qjXTAF8FhDYbN5tSI9I7YjMxcZqS7mdjb1EQC2SdI8XolhrhCK5mSoTEjnoKBBdqXU6I-1bga6FFjOvkSM4kWAvufavfd5KTwT3saFSPWG_KF83A"
-                  />
-                  <div
-                    class="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-white text-[10px] border-2 border-white dark:border-slate-800"
-                  >
-                    <span class="material-symbols-outlined text-[14px]"
-                      >verified</span
-                    >
-                  </div>
-                </div>
-                <div class="text-right">
-                  <div class="text-lg font-bold text-primary">
-                    $35.000 COP<span class="text-xs font-normal text-slate-500"
-                      >/hr</span
-                    >
-                  </div>
-                  <div class="flex items-center gap-1 text-amber-500">
-                    <span class="material-symbols-outlined text-sm">star</span>
-                    <span class="text-xs font-bold">4.8 (210)</span>
-                  </div>
-                </div>
-              </div>
-              <h3 class="mb-1 text-lg font-bold text-slate-900 dark:text-white">
-                Elias Rodriguez
-              </h3>
-              <p
-                class="mb-4 text-xs font-medium text-slate-500 uppercase tracking-wide"
-              >
-                Idiomas
-              </p>
-              <div class="mb-6 flex flex-wrap gap-2">
-                <span
-                  class="rounded-full bg-slate-100 px-3 py-1 text-[10px] font-bold text-slate-600 dark:bg-slate-700 dark:text-slate-300"
-                  >ESPAÑOL</span
-                >
-                <span
-                  class="rounded-full bg-slate-100 px-3 py-1 text-[10px] font-bold text-slate-600 dark:bg-slate-700 dark:text-slate-300"
-                  >FRANCÉS</span
-                >
-              </div>
-              <button
-                onclick="
-                  event.stopPropagation();
-                  window.location.href = 'tutor_profile.html?id=elena';
-                "
-                class="w-full rounded-lg bg-primary/10 py-2.5 text-sm font-bold text-primary hover:bg-primary hover:text-white transition-all"
-              >
-                Ver Perfil
-              </button>
-            </div>
-            <!-- Tutor Card 4 -->
-            <div
-              class="group relative rounded-2xl border border-slate-100 bg-white p-6 transition-all hover:shadow-xl hover:-translate-y-1 dark:border-slate-800 dark:bg-slate-800/50 cursor-pointer"
-              onclick="window.location.href = 'tutor_profile.html?id=marcus'"
-            >
-              <div class="mb-4 flex items-start justify-between">
-                <div class="relative">
-                  <img
-                    alt=""
-                    class="shrink-0 h-16 w-16 rounded-full object-cover ring-2 ring-primary/20"
-                    src="../assets/images/foto_iconica.jpeg"
-                  />
-                  <div
-                    class="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-white text-[10px] border-2 border-white dark:border-slate-800"
-                  >
-                    <span class="material-symbols-outlined text-[14px]"
-                      >verified</span
-                    >
-                  </div>
-                </div>
-                <div class="text-right">
-                  <div class="text-lg font-bold text-primary">
-                    $50.000 COP<span class="text-xs font-normal text-slate-500"
-                      >/hr</span
-                    >
-                  </div>
-                  <div class="flex items-center gap-1 text-amber-500">
-                    <span class="material-symbols-outlined text-sm">star</span>
-                    <span class="text-xs font-bold">4.9 (76)</span>
-                  </div>
-                </div>
-              </div>
-              <h3 class="mb-1 text-lg font-bold text-slate-900 dark:text-white">
-                Mala Influencia
-              </h3>
-              <p
-                class="mb-4 text-xs font-medium text-slate-500 uppercase tracking-wide"
-              >
-                Alcoholisma y Adicciones
-              </p>
-              <div class="mb-6 flex flex-wrap gap-2">
-                <span
-                  class="rounded-full bg-slate-100 px-3 py-1 text-[10px] font-bold text-slate-600 dark:bg-slate-700 dark:text-slate-300"
-                  >Que paso Ayer!!</span
-                >
-                <span
-                  class="rounded-full bg-slate-100 px-3 py-1 text-[10px] font-bold text-slate-600 dark:bg-slate-700 dark:text-slate-300"
-                  >Full Party</span
-                >
-              </div>
-              <button
-                onclick="
-                  event.stopPropagation();
-                  window.location.href = 'tutor_profile.html?id=marcus';
-                "
-                class="w-full rounded-lg bg-primary/10 py-2.5 text-sm font-bold text-primary hover:bg-primary hover:text-white transition-all"
-              >
-                Ver Perfil
-              </button>
-            </div>
+            <!-- Tutors will be loaded dynamically by JS -->
           </div>
         </div>
       </section>
@@ -665,9 +440,7 @@
             </p>
             <div class="flex flex-wrap justify-center gap-4">
               <button
-                onclick="
-                  window.location.href = 'tutor_management_availability.html'
-                "
+                onclick="handleBecomeTutorClick()"
                 class="rounded-xl bg-white px-8 py-4 text-lg font-bold text-primary shadow-xl hover:bg-slate-50 transition-all"
               >
                 Empieza a Dar Clases Hoy
@@ -687,6 +460,27 @@
         </div>
       </section>
     </main>
+
+    <div
+      id="student-block-modal"
+      class="hidden fixed inset-0 z-50 items-center justify-center bg-black/50 backdrop-blur-sm px-4"
+    >
+      <div
+        class="w-full max-w-sm rounded-2xl bg-white p-6 text-center shadow-2xl dark:bg-slate-900 border border-slate-200 dark:border-slate-800"
+      >
+        <div class="mx-auto mb-4 flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+          <span class="material-symbols-outlined">info</span>
+        </div>
+        <h3 class="mb-2 text-lg font-bold">Esta funcion no esta disponible para ti</h3>
+        <p class="mb-6 text-sm text-slate-500">Tu cuenta actual esta registrada como estudiante.</p>
+        <button
+          onclick="closeStudentBlockModal()"
+          class="w-full rounded-xl bg-primary px-4 py-3 text-sm font-bold text-white hover:bg-primary/90"
+        >
+          Entendido
+        </button>
+      </div>
+    </div>
 
     <!-- Footer -->
     <footer
@@ -728,15 +522,6 @@
                       .scrollIntoView({ behavior: 'smooth' })
                   "
                   >Encontrar Tutor</a
-                >
-              </li>
-              <li>
-                <a
-                  class="hover:text-primary transition-colors cursor-pointer"
-                  onclick="
-                    window.location.href = 'tutor_management_availability.html'
-                  "
-                  >Ser Tutor</a
                 >
               </li>
               <li>
