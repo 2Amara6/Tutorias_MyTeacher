@@ -42,7 +42,7 @@ Estilos específicos complementarios a TailwindCSS.
 
 ### Directorio `.env`
 
-- **`.rnv`**: Funciona como la base de datos para la información de los tutores y estudiantes, garantizando la consistencia de datos e imágenes en todas las vistas.
+- **`.env`**: Funciona como la base de datos para la información de los tutores y estudiantes, garantizando la consistencia de datos e imágenes en todas las vistas.
 
 ---
 
